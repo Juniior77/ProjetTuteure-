@@ -1,0 +1,7 @@
+#Fri Feb 17 14:46:28 CET 2017
+base.0=C\:\\Users\\VILAIRE\\Desktop\\ProjetTuteure-\\Test Android\\AccelerometerPlay\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run-bootstrap_b555820dce54592e601dc19b4d11c70fd8df4112
+renamed.1=classes.dex
+renamed.0=classes2.dex
+file.1=C\:\\Users\\VILAIRE\\Desktop\\ProjetTuteure-\\Test Android\\AccelerometerPlay\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run_18ef21e67673fe744b353ed0f8e0a4e52c31ac09\\classes.dex
+base.1=C\:\\Users\\VILAIRE\\Desktop\\ProjetTuteure-\\Test Android\\AccelerometerPlay\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run_18ef21e67673fe744b353ed0f8e0a4e52c31ac09
+file.0=C\:\\Users\\VILAIRE\\Desktop\\ProjetTuteure-\\Test Android\\AccelerometerPlay\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run-bootstrap_b555820dce54592e601dc19b4d11c70fd8df4112\\classes.dex
