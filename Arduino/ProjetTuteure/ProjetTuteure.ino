@@ -1,9 +1,8 @@
 /*
-* Bluetooh Basic: LED ON OFF - Avishkar
-* Coder - Mayoogh Girish
-* Website - http://bit.do/Avishkar
-* Download the App : https://github.com/Mayoogh/Arduino-Bluetooth-Basic
-* This program lets you to control a LED on pin 13 of arduino using a bluetooth module
+* Bluetooh Vehicule
+* Coder - VILAIRE Guillaume
+* Download the App : https://github.com/Juniior77/ProjetTuteure-/blob/master/Arduino/ProjetTuteure/ProjetTuteure.ino
+* This program controls a car by bluetooth reception
 */
 
 #include <Servo.h>
