@@ -19,14 +19,16 @@ Servo myservo;//create a object of servo,named as myservo
 
 
 
-byte data[3];            //Variable for storing received data
-int dataConv;
+byte data[4];            //Variable for storing received data
+int dataAvAr;
 int dataMotor1;
 int dataMotor2;
 int dataServoDir;
 void setup()
 {
-    Serial.begin(9600);   //Sets the baud for serial data transmission    
+    pinMode(LED_BUILTIN, OUTPUT);
+  
+    Serial.begin(115200);   //Sets the baud for serial data transmission    
 
     pinMode(ENA_PIN, OUTPUT);
     pinMode(ENB_PIN, OUTPUT);
@@ -36,60 +38,6 @@ void setup()
     pinMode(MOTOR_R_2, OUTPUT);
     myservo.attach(2);//servo attach to pin2
 }
-void loop()
-{
-   if(Serial.available() > 0)      // Send data only when you receive data:
-   {
-    
-      Serial.readBytes(data, 3);        //Read the incoming data & store into data
-      dataMotor1 = data[0];
-      dataMotor2 = data[1];
-      dataServoDir = data[2];
-      if(dataMotor1 <= 255 && data >127)
-      {
-        dataMotor1 -= 128;
-      }
-      else
-      {
-        dataMotor1 += 128;
-      }
-      
-Serial.print("Moteur1: ");
-Serial.print(dataMotor1);
-Serial.print("\n");
-      
-      
-      if(dataMotor2 <= 255 && dataMotor2 >127)
-      {
-        dataMotor2 -= 128;
-      }
-      else
-      {
-        dataMotor2 += 128;
-      }
-
-Serial.print("Moteur2: ");
-Serial.print(dataMotor2);
-Serial.print("\n");
-      
-      
-      if(dataServoDir <= 255 && dataServoDir >127)
-      {
-        dataServoDir -= 128;
-      }
-      else
-      {
-        dataServoDir += 128;
-      }
-
-Serial.print("Servo: ");
-Serial.print(dataServoDir);
-Serial.print("\n");
-              
-      CAR_move(1,dataMotor1,dataMotor2,dataServoDir);
-   }
-}
-
 void CAR_move(int direction, int speed_left, int speed_right, int direct)
 {
     switch(direction)
@@ -108,3 +56,70 @@ void CAR_move(int direction, int speed_left, int speed_right, int direct)
     analogWrite(ENB_PIN,speed_right);//write speed_right to ENB_PIN,if speed_right is high,allow right motor rotate
     myservo.write(direct);
 }
+void loop()
+{
+   if(Serial.available() > 0)      // Send data only when you receive data:
+   {
+    digitalWrite(LED_BUILTIN, HIGH);
+      Serial.readBytes(data, 4);        //Read the incoming data & store into data
+      dataAvAr = data[0];
+      dataMotor1 = data[1];
+      dataMotor2 = data[2];
+      dataServoDir = data[3];
+      
+      if(dataAvAr <= 255 && dataAvAr >127)
+      {
+        dataAvAr -= 128;
+      }
+      else
+      {
+        dataAvAr += 128;
+      }
+      
+      if(dataMotor1 <= 255 && dataMotor1 >127)
+      {
+        dataMotor1 -= 128;
+      }
+      else
+      {
+        dataMotor1 += 128;
+      }
+/*      
+Serial.print("Moteur1: ");
+Serial.print(dataMotor1);
+Serial.print("\n");
+*/      
+      
+      if(dataMotor2 <= 255 && dataMotor2 >127)
+      {
+        dataMotor2 -= 128;
+      }
+      else
+      {
+        dataMotor2 += 128;
+      }
+/*
+Serial.print("Moteur2: ");
+Serial.print(dataMotor2);
+Serial.print("\n");
+*/      
+      
+      if(dataServoDir <= 255 && dataServoDir >127)
+      {
+        dataServoDir -= 128;
+      }
+      else
+      {
+        dataServoDir += 128;
+      }
+/*
+Serial.print("Servo: ");
+Serial.print(dataServoDir);
+Serial.print("\n");
+*/              
+    digitalWrite(LED_BUILTIN, LOW);
+      CAR_move(dataAvAr, dataMotor1, dataMotor2, dataServoDir);
+   }
+}
+
+

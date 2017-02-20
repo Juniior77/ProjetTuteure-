@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instant-run
+    abi="arm64-v8a,armeabi-v7a,armeabi"
+    api-level="22"
+    density="xxhdpi"
+    format="8"
+    plugin-version="2.2.2"
+    timestamp="74909651330065"
+    token="-38018423633957249"
+    verifier="COLD_SWAP_REQUESTED" >
+
+    <task
+        name="javac"
+        duration="178" />
+    <task
+        name="instant-run-dex"
+        duration="0" />
+    <task
+        name="instant-run-transform"
+        duration="25" />
+    <task
+        name="verifier"
+        duration="1" />
+
+    <artifact
+        location="/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_4/classes.dex"
+        type="DEX" />
+
+    <build
+        timestamp="73372090226827"
+        verifier="FULL_BUILD_REQUESTED" >
+        <artifact
+            location="/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/build/outputs/apk/app-debug.apk"
+            type="MAIN" />
+    </build>
+    <build
+        timestamp="74909651330065"
+        verifier="COLD_SWAP_REQUESTED" >
+        <artifact
+            location="/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_4/classes.dex"
+            type="DEX" />
+    </build>
+
+</instant-run>

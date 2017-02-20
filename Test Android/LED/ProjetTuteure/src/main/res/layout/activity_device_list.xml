@@ -36,8 +36,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_below="@+id/textView"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView"
         android:layout_above="@+id/button" />
 
 </RelativeLayout>

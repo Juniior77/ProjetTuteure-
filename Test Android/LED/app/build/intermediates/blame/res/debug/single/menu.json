@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/build/intermediates/res/merged/debug/menu/menu_led_control.xml",
+        "source": "/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/src/main/res/menu/menu_led_control.xml"
+    },
+    {
+        "merged": "/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/build/intermediates/res/merged/debug/menu/menu_device_list.xml",
+        "source": "/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/src/main/res/menu/menu_device_list.xml"
+    }
+]

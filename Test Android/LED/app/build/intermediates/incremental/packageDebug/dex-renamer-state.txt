@@ -1,0 +1,7 @@
+#Wed Feb 15 14:00:47 CET 2017
+base.0=/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_5e8b973feb04e156d2ee3c35453c11af913a18e6
+renamed.1=classes2.dex
+renamed.0=classes.dex
+file.1=/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_fd3215177ac955981e59b55afceedbb515581891/classes.dex
+base.1=/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_fd3215177ac955981e59b55afceedbb515581891
+file.0=/Users/Guillaume/AndroidStudioProjects/Arduino-Bluetooth-Basic-master/LED/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_5e8b973feb04e156d2ee3c35453c11af913a18e6/classes.dex
