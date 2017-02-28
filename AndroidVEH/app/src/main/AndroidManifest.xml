@@ -21,7 +21,9 @@
         <activity
             android:name=".VehiculeControl"
             android:label="@string/title_activity_vehicule_control"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".VehiculeControlView"></activity>
     </application>
 
 </manifest>
