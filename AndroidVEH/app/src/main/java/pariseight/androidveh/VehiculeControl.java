@@ -31,6 +31,7 @@ public class VehiculeControl extends Activity {
     private SensorManager mSensorManager;
     //private VehicleControlView mControlVehiculeView;
     private VehiculeControlView mControlView;
+    private int Accel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class VehiculeControl extends Activity {
         public void onSensorChanged(SensorEvent sensorEvent) {
             float y = sensorEvent.values[1];
             Direction(y);
+            Acceleration();
             if (isBtConnected) {
                 try {
                     btSocket.getOutputStream().write(buffer);
@@ -88,7 +90,22 @@ public class VehiculeControl extends Activity {
 
         buffer[3] = (byte) (direction - 128);
         if (BuildConfig.DEBUG) {
-            Log.i("FCT->Direction", "Direction: " + direction + " Buffer: " + buffer[2]);
+            //Log.i("FCT->Direction", "Direction: " + direction + " Buffer: " + buffer[2]);
+        }
+    }
+
+    public void Acceleration(){
+        Accel = (int)mControlView.repereAcceleration;
+        if(Accel >= 0 && Accel < 255){
+            buffer[0] = 1 - 128;
+            buffer[1] = (byte) (Accel - 128);
+            buffer[2] = (byte) (Accel - 128);
+        }
+        if (Accel < 0) {
+            Accel *= -1;
+            buffer[0] = 0 - 128;
+            buffer[1] = (byte) (Accel - 128);
+            buffer[2] = (byte) (Accel - 128);
         }
     }
 
