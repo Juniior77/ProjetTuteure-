@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AndroidVEH</string>
+    <string name="title_activity_vehicule_control">VehiculeControl</string>
+</resources>
