@@ -1,8 +1,8 @@
 package pariseight.androidveh;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
@@ -11,16 +11,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ProgressBar;
+import android.view.View;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.UUID;
 
-public class VehiculeControl extends AppCompatActivity {
+public class VehiculeControl extends Activity {
 
     String address = null;
     private ProgressDialog progress;
@@ -30,6 +29,8 @@ public class VehiculeControl extends AppCompatActivity {
     byte [] buffer = new byte[4];
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private SensorManager mSensorManager;
+    //private VehicleControlView mControlVehiculeView;
+    private VehiculeControlView mControlView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +44,19 @@ public class VehiculeControl extends AppCompatActivity {
         Intent newInt = getIntent();
         address = newInt.getStringExtra(MainActivity.EXTRA_ADDRESS);
 
-        setContentView(R.layout.activity_vehicule_control);
         new ConnectBT().execute();
 
         buffer[0] = 0 - 128;
         buffer[1] = 0 - 128;
         buffer[2] = 0 - 128;
         buffer[3] = 90 - 128;
+
+        mControlView = (VehiculeControlView)findViewById(R.id.VehiculeContView);
+        mControlView.setVisibility(View.VISIBLE);
+
+        //mControlVehiculeView = (VehicleControlView)findViewById(R.id.VehicleControlView);
+        //mControlVehiculeView.setVisibility(View.VISIBLE);
+       // mControlVehiculeView.run();
     }
 
     private final SensorEventListener mSensorListener = new SensorEventListener() {
