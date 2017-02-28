@@ -175,7 +175,7 @@ public class VehiculeControl extends ActionBarActivity {
         if (direction < 60)
             direction = 60;
 
-        buffer[3] = (byte) (direction - 128);
+        buffer[3] = (byte) (direction & 0xFF);
         if (BuildConfig.DEBUG) {
             Log.i("FCT->Direction", "Direction: " + direction + " Buffer: " + buffer[2]);
         }
