@@ -16,7 +16,7 @@ Servo myservo;//create a object of servo,named as myservo
 #define MOTOR_L_2 9 // left MOTOR_L_2 attach to pin9
 #define MOTOR_R_1 10 //right  MOTOR_R_1 attach to pin10
 #define MOTOR_R_2 11 //right MOTOR_R_2 attach to pin11
-#define LED_PIN   7
+#define LED_PIN   13
 CRGB leds[4];
 
 
@@ -40,7 +40,7 @@ void setup()
     
     myservo.attach(2);//servo attach to pin2
 
-    FastLED.addLeds<WS2811, 7, RGB>(leds, 4);
+    FastLED.addLeds<WS2811, LED_PIN, RGB>(leds, 4);
     for(int i = 0; i < 4; i++)
     {
       leds[i].r = 0;
@@ -48,6 +48,7 @@ void setup()
       leds[i].b = 0;
     }
     FastLED.show();
+    Serial.print("Module prêt ! \n");
 }
 void CAR_move(int direction, int speed_left, int speed_right, int direct)
 {
@@ -70,21 +71,20 @@ void CAR_move(int direction, int speed_left, int speed_right, int direct)
 void loop()
 {
   Serial.flush();
-   if(Serial.available() > 0)      // Send data only when you receive data:
+   if(Serial.available())      // Send data only when you receive data:
    {
-    digitalWrite(LED_BUILTIN, HIGH);
       Serial.readBytes(dataIn, 16);        //Read the incoming data & store into data
 
       for(int i = 0; i < 16; i++)
       {
-        if(dataIn[i] <= 255 && dataIn[i] >127)
-        {
-          dataIn[i] -= 128;
-        }
-        else
-        {
-          dataIn[i] += 128;
-        }
+          if(dataIn[i] <= 255 && dataIn[i] >127)
+          {
+            dataIn[i] -= 128;
+          }
+          else
+          {
+            dataIn[i] += 128;
+          }
       }
 
       
@@ -92,7 +92,7 @@ void loop()
       dataMotor1 = dataIn[1];
       dataMotor2 = dataIn[2];
       dataServoDir = dataIn[3];
-      
+
       leds[0].r = dataIn[4];
       leds[1].r = dataIn[5];
       leds[2].r = dataIn[6];
@@ -107,58 +107,7 @@ void loop()
       leds[1].b = dataIn[13];
       leds[2].b = dataIn[14];
       leds[3].b = dataIn[15];
-      
- /*     if(dataAvAr <= 255 && dataAvAr >127)
-      {
-        dataAvAr -= 128;
-      }
-      else
-      {
-        dataAvAr += 128;
-      }
-      
-      if(dataMotor1 <= 255 && dataMotor1 >127)
-      {
-        dataMotor1 -= 128;
-      }
-      else
-      {
-        dataMotor1 += 128;
-      }*/
-    
-//Serial.print("Moteur1: ");
-//Serial.print(dataMotor1);
-//Serial.print("\n");
-      
-      
- /*     if(dataMotor2 <= 255 && dataMotor2 >127)
-      {
-        dataMotor2 -= 128;
-      }
-      else
-      {
-        dataMotor2 += 128;
-      }*/
-
-//Serial.print("Moteur2: ");
-//Serial.print(dataMotor2);
-//Serial.print("\n");
-      
-      
-     /* if(dataServoDir <= 255 && dataServoDir >127)
-      {
-        dataServoDir -= 128;
-      }
-      else
-      {
-        dataServoDir += 128;
-      }*/
-
-//Serial.print("Servo: ");
-//Serial.print(dataServoDir);
-//Serial.print("\n");
-
-      digitalWrite(LED_BUILTIN, LOW);
+     
       CAR_move(dataAvAr, dataMotor1, dataMotor2, dataServoDir);
       FastLED.show();
    }

@@ -38,7 +38,7 @@ public class VehiculeControl extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         mSensorManager = (SensorManager) getSystemService(this.SENSOR_SERVICE);
         mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_FASTEST);
+                SensorManager.SENSOR_DELAY_GAME);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicule_control);
@@ -52,6 +52,10 @@ public class VehiculeControl extends Activity {
         buffer[1] = 0 - 128;
         buffer[2] = 0 - 128;
         buffer[3] = 90 - 128;
+        for(int i = 4; i < 16; i++)
+        {
+            buffer[i] = 0 - 128;
+        }
 
         mControlView = (VehiculeControlView)findViewById(R.id.VehiculeContView);
         mControlView.setVisibility(View.VISIBLE);
@@ -59,6 +63,156 @@ public class VehiculeControl extends Activity {
         //mControlVehiculeView = (VehicleControlView)findViewById(R.id.VehicleControlView);
         //mControlVehiculeView.setVisibility(View.VISIBLE);
        // mControlVehiculeView.run();
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while(true) {
+                        sleep(100);
+                        if(mControlView.ClignGauche == true){
+                            //LED AR GAUCHE
+                            buffer[4] = 120 - 128;
+                            buffer[8] = 50 - 128;
+                            buffer[12] = 0 - 128;
+                            //LED AR DROITE
+                            buffer[5] = 0 - 128;
+                            buffer[9] = 0 - 128;
+                            buffer[13] = 0 - 128;
+                            //LED AV GAUCHE
+                            buffer[6] = 120 - 128;
+                            buffer[10] = 50 - 128;
+                            buffer[14] = 0 - 128;
+                            //LED AV DROITE
+                            buffer[7] = 0 - 128;
+                            buffer[11] = 0 - 128;
+                            buffer[15] = 0 - 128;
+
+                            //BREAK
+                            sleep(500);
+
+                            buffer[4] = 0 - 128;
+                            buffer[8] = 0 - 128;
+                            buffer[12] = 0 - 128;
+                            //LED AR DROITE
+                            buffer[5] = 0 - 128;
+                            buffer[9] = 0 - 128;
+                            buffer[13] = 0 - 128;
+                            //LED AV GAUCHE
+                            buffer[6] = 0 - 128;
+                            buffer[10] = 0 - 128;
+                            buffer[14] = 0 - 128;
+                            //LED AV DROITE
+                            buffer[7] = 0 - 128;
+                            buffer[11] = 0 - 128;
+                            buffer[15] = 0 - 128;
+                            sleep(300);
+
+                        }
+                        else if(mControlView.ClignDroite == true){
+                            //LED AR GAUCHE
+                            buffer[4] = 0 - 128;
+                            buffer[8] = 0 - 128;
+                            buffer[12] = 0 - 128;
+                            //LED AR DROITE
+                            buffer[5] = 120 - 128;
+                            buffer[9] = 50 - 128;
+                            buffer[13] = 0 - 128;
+                            //LED AV GAUCHE
+                            buffer[6] = 0 - 128;
+                            buffer[10] = 0 - 128;
+                            buffer[14] = 0 - 128;
+                            //LED AV DROITE
+                            buffer[7] = 120 - 128;
+                            buffer[11] = 50 - 128;
+                            buffer[15] = 0 - 128;
+
+                            //BREAK
+                            sleep(500);
+
+                            buffer[4] = 0 - 128;
+                            buffer[8] = 0 - 128;
+                            buffer[12] = 0 - 128;
+                            //LED AR DROITE
+                            buffer[5] = 0 - 128;
+                            buffer[9] = 0 - 128;
+                            buffer[13] = 0 - 128;
+                            //LED AV GAUCHE
+                            buffer[6] = 0 - 128;
+                            buffer[10] = 0 - 128;
+                            buffer[14] = 0 - 128;
+                            //LED AV DROITE
+                            buffer[7] = 0 - 128;
+                            buffer[11] = 0 - 128;
+                            buffer[15] = 0 - 128;
+                            sleep(300);
+                        }
+                        else if(mControlView.Warning == true)
+                        {
+                            //LED AR GAUCHE
+                            buffer[4] = 120 - 128;
+                            buffer[8] = 50 - 128;
+                            buffer[12] = 0 - 128;
+                            //LED AR DROITE
+                            buffer[5] = 120 - 128;
+                            buffer[9] = 50 - 128;
+                            buffer[13] = 0 - 128;
+                            //LED AV GAUCHE
+                            buffer[6] = 120 - 128;
+                            buffer[10] = 50 - 128;
+                            buffer[14] = 0 - 128;
+                            //LED AV DROITE
+                            buffer[7] = 120 - 128;
+                            buffer[11] = 50 - 128;
+                            buffer[15] = 0 - 128;
+
+                            //BREAK
+                            sleep(500);
+
+                            buffer[4] = 0 - 128;
+                            buffer[8] = 0 - 128;
+                            buffer[12] = 0 - 128;
+                            //LED AR DROITE
+                            buffer[5] = 0 - 128;
+                            buffer[9] = 0 - 128;
+                            buffer[13] = 0 - 128;
+                            //LED AV GAUCHE
+                            buffer[6] = 0 - 128;
+                            buffer[10] = 0 - 128;
+                            buffer[14] = 0 - 128;
+                            //LED AV DROITE
+                            buffer[7] = 0 - 128;
+                            buffer[11] = 0 - 128;
+                            buffer[15] = 0 - 128;
+                            sleep(300);
+                        }
+                        else{
+                            //LED AR GAUCHE
+                            buffer[4] = 0 - 128;
+                            buffer[8] = 0 - 128;
+                            buffer[12] = 0 - 128;
+                            //LED AR DROITE
+                            buffer[5] = 0 - 128;
+                            buffer[9] = 0 - 128;
+                            buffer[13] = 0 - 128;
+                            //LED AV GAUCHE
+                            buffer[6] = 0 - 128;
+                            buffer[10] = 0 - 128;
+                            buffer[14] = 0 - 128;
+                            //LED AV DROITE
+                            buffer[7] = 0 - 128;
+                            buffer[11] = 0 - 128;
+                            buffer[15] = 0 - 128;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+
     }
 
     private final SensorEventListener mSensorListener = new SensorEventListener() {
