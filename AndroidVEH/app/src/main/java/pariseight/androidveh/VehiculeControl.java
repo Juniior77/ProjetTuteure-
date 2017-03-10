@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 public class VehiculeControl extends Activity {
@@ -26,7 +27,7 @@ public class VehiculeControl extends Activity {
     BluetoothAdapter myBluetooth = null;
     BluetoothSocket btSocket = null;
     private boolean isBtConnected = false;
-    byte [] buffer = new byte[4];
+    byte [] buffer = new byte[16];
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private SensorManager mSensorManager;
     //private VehicleControlView mControlVehiculeView;

@@ -24,6 +24,10 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
     private Bitmap mRepereAcc;
     private Bitmap joyAcc;
     private Bitmap mJoyAcc;
+    private Bitmap Gauche;
+    private Bitmap mGauche;
+    private Bitmap Droite;
+    private Bitmap mDroite;
     public Thread cv_thread;
     public int posY;
     private boolean onMove = false;
@@ -54,6 +58,10 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
         joyAcc = BitmapFactory.decodeResource(mRes, R.drawable.accelerationpoint);
         mJoyAcc = Bitmap.createScaledBitmap(joyAcc, 270, 80, true);
         ptZero = getHeight() / 2;
+        Gauche = BitmapFactory.decodeResource(mRes, R.drawable.gauche150);
+        mGauche = Bitmap.createScaledBitmap(Gauche, 100, 100, true);
+        Droite = BitmapFactory.decodeResource(mRes, R.drawable.droite150);
+        mDroite = Bitmap.createScaledBitmap(Droite, 100, 100, true);
     }
 
     @Override
@@ -129,5 +137,13 @@ Log.i("ACC", "Acceleration: " + repereAcceleration);
 
     public void drawJoyAccMove(Canvas canvas){
         canvas.drawBitmap(mJoyAcc, (getWidth() - 150) - (mJoyAcc.getWidth()/2), posY , null);
+    }
+
+    public void drawGauche(Canvas canvas){
+        canvas.drawBitmap(mGauche, ((getWidth() / 2) - (getWidth() / 2)) - (mGauche.getWidth()/2), ((getHeight() / 2) - (mGauche.getHeight() / 2)), null);
+    }
+
+    public void drawDroite(Canvas canvas){
+
     }
 }
