@@ -168,17 +168,19 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
             }
             else if(posX > (getWidth()/2)-(getWidth()/8) && posY > 100 && posX < (getWidth()/2)-(getWidth()/8)+100 && posY < 100+100){
                 //BOUTON FEU VERT
-                if(PleinPhare == false)
-                    PleinPhare = true;
-                else
-                    PleinPhare = false;
-            }
-            else if(posX > (getWidth()/2)+(getWidth()/8) && posY > 100 && posX < (getWidth()/2)+(getWidth()/8)+100 && posY < 100+100){
-                //BOUTON FEU BLEU
                 if(Phare == false)
                     Phare = true;
                 else
                     Phare = false;
+                Log.i("REPERE_BOUTON_VERT", "HELLO TU EST SUR LE BOUTON FEU VERT :)");
+            }
+            else if(posX > (getWidth()/2)+(getWidth()/8) && posY > 100 && posX < (getWidth()/2)+(getWidth()/8)+100 && posY < 100+100){
+                //BOUTON FEU BLEU
+                if(PleinPhare == false)
+                    PleinPhare = true;
+                else
+                    PleinPhare = false;
+                Log.i("REPERE_BOUTON_BLEU", "HELLO TU EST SUR LE BOUTON FEU BLEU :)");
             }
             else if(posX > (getWidth()/2) && posY > 100 && posX < (getWidth()/2)+100 && posY < 100+100){
                 //BOUTON WARNING

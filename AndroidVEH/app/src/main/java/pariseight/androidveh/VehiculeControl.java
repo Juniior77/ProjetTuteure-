@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 public class VehiculeControl extends Activity {
@@ -33,6 +34,11 @@ public class VehiculeControl extends Activity {
     //private VehicleControlView mControlVehiculeView;
     private VehiculeControlView mControlView;
     private int Accel;
+    private FeuSignalisation LED_AR_G;
+    private FeuSignalisation LED_AR_D;
+    private FeuSignalisation LED_AV_G;
+    private FeuSignalisation LED_AV_D;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,84 +76,7 @@ public class VehiculeControl extends Activity {
                 try {
                     while(true) {
                         sleep(100);
-                        if(mControlView.ClignGauche == true){
-                            //LED AR GAUCHE
-                            buffer[4] = 120 - 128;
-                            buffer[8] = 50 - 128;
-                            buffer[12] = 0 - 128;
-                            //LED AR DROITE
-                            buffer[5] = 0 - 128;
-                            buffer[9] = 0 - 128;
-                            buffer[13] = 0 - 128;
-                            //LED AV GAUCHE
-                            buffer[6] = 120 - 128;
-                            buffer[10] = 50 - 128;
-                            buffer[14] = 0 - 128;
-                            //LED AV DROITE
-                            buffer[7] = 0 - 128;
-                            buffer[11] = 0 - 128;
-                            buffer[15] = 0 - 128;
-
-                            //BREAK
-                            sleep(500);
-
-                            buffer[4] = 0 - 128;
-                            buffer[8] = 0 - 128;
-                            buffer[12] = 0 - 128;
-                            //LED AR DROITE
-                            buffer[5] = 0 - 128;
-                            buffer[9] = 0 - 128;
-                            buffer[13] = 0 - 128;
-                            //LED AV GAUCHE
-                            buffer[6] = 0 - 128;
-                            buffer[10] = 0 - 128;
-                            buffer[14] = 0 - 128;
-                            //LED AV DROITE
-                            buffer[7] = 0 - 128;
-                            buffer[11] = 0 - 128;
-                            buffer[15] = 0 - 128;
-                            sleep(300);
-
-                        }
-                        else if(mControlView.ClignDroite == true){
-                            //LED AR GAUCHE
-                            buffer[4] = 0 - 128;
-                            buffer[8] = 0 - 128;
-                            buffer[12] = 0 - 128;
-                            //LED AR DROITE
-                            buffer[5] = 120 - 128;
-                            buffer[9] = 50 - 128;
-                            buffer[13] = 0 - 128;
-                            //LED AV GAUCHE
-                            buffer[6] = 0 - 128;
-                            buffer[10] = 0 - 128;
-                            buffer[14] = 0 - 128;
-                            //LED AV DROITE
-                            buffer[7] = 120 - 128;
-                            buffer[11] = 50 - 128;
-                            buffer[15] = 0 - 128;
-
-                            //BREAK
-                            sleep(500);
-
-                            buffer[4] = 0 - 128;
-                            buffer[8] = 0 - 128;
-                            buffer[12] = 0 - 128;
-                            //LED AR DROITE
-                            buffer[5] = 0 - 128;
-                            buffer[9] = 0 - 128;
-                            buffer[13] = 0 - 128;
-                            //LED AV GAUCHE
-                            buffer[6] = 0 - 128;
-                            buffer[10] = 0 - 128;
-                            buffer[14] = 0 - 128;
-                            //LED AV DROITE
-                            buffer[7] = 0 - 128;
-                            buffer[11] = 0 - 128;
-                            buffer[15] = 0 - 128;
-                            sleep(300);
-                        }
-                        else if(mControlView.Warning == true)
+                        if(mControlView.Warning)
                         {
                             //LED AR GAUCHE
                             buffer[4] = 120 - 128;
@@ -168,23 +97,289 @@ public class VehiculeControl extends Activity {
 
                             //BREAK
                             sleep(500);
+                            if(mControlView.Phare || mControlView.PleinPhare){
+                                if(mControlView.Phare)
+                                {
+                                    //LED AR GAUCHE
+                                    buffer[4] = 128 - 128;
+                                    buffer[8] = 0 - 128;
+                                    buffer[12] = 0 - 128;
+                                    //LED AR DROITE
+                                    buffer[5] = 128 - 128;
+                                    buffer[9] = 0 - 128;
+                                    buffer[13] = 0 - 128;
+                                    //LED AV GAUCHE
+                                    buffer[6] = 128 - 128;
+                                    buffer[10] = 128 - 128;
+                                    buffer[14] = 128 - 128;
+                                    //LED AV DROITE
+                                    buffer[7] = 128 - 128;
+                                    buffer[11] = 128 - 128;
+                                    buffer[15] = 128 - 128;
+                                    sleep(300);
+                                }
+                                else{
+                                    //LED AR GAUCHE
+                                    buffer[4] = 128 - 128;
+                                    buffer[8] = 0 - 128;
+                                    buffer[12] = 0 - 128;
+                                    //LED AR DROITE
+                                    buffer[5] = 128 - 128;
+                                    buffer[9] = 0 - 128;
+                                    buffer[13] = 0 - 128;
+                                    //LED AV GAUCHE
+                                    buffer[6] = 255 - 128;
+                                    buffer[10] = 255 - 128;
+                                    buffer[14] = 255 - 128;
+                                    //LED AV DROITE
+                                    buffer[7] = 255 - 128;
+                                    buffer[11] = 255 - 128;
+                                    buffer[15] = 255 - 128;
+                                    sleep(300);
+                                }
 
-                            buffer[4] = 0 - 128;
-                            buffer[8] = 0 - 128;
+                            }
+                            else{
+                                buffer[4] = 0 - 128;
+                                buffer[8] = 0 - 128;
+                                buffer[12] = 0 - 128;
+                                //LED AR DROITE
+                                buffer[5] = 0 - 128;
+                                buffer[9] = 0 - 128;
+                                buffer[13] = 0 - 128;
+                                //LED AV GAUCHE
+                                buffer[6] = 0 - 128;
+                                buffer[10] = 0 - 128;
+                                buffer[14] = 0 - 128;
+                                //LED AV DROITE
+                                buffer[7] = 0 - 128;
+                                buffer[11] = 0 - 128;
+                                buffer[15] = 0 - 128;
+                                sleep(300);
+                            }
+                        }
+                        else if(mControlView.ClignGauche){
+                            //LED AR GAUCHE
+                            buffer[4] = 120 - 128;
+                            buffer[8] = 50 - 128;
                             buffer[12] = 0 - 128;
                             //LED AR DROITE
-                            buffer[5] = 0 - 128;
-                            buffer[9] = 0 - 128;
-                            buffer[13] = 0 - 128;
+                            //buffer[5] = 0 - 128;
+                            //buffer[9] = 0 - 128;
+                            //buffer[13] = 0 - 128;
                             //LED AV GAUCHE
-                            buffer[6] = 0 - 128;
-                            buffer[10] = 0 - 128;
+                            buffer[6] = 120 - 128;
+                            buffer[10] = 50 - 128;
                             buffer[14] = 0 - 128;
                             //LED AV DROITE
-                            buffer[7] = 0 - 128;
-                            buffer[11] = 0 - 128;
+                            //buffer[7] = 0 - 128;
+                            //buffer[11] = 0 - 128;
+                            //buffer[15] = 0 - 128;
+
+                            //BREAK
+                            sleep(500);
+                            if(mControlView.Phare || mControlView.PleinPhare){
+                                if(mControlView.Phare){
+                                    //LED AR GAUCHE
+                                    buffer[4] = 128 - 128;
+                                    buffer[8] = 0 - 128;
+                                    buffer[12] = 0 - 128;
+                                    //LED AR DROITE
+                                    buffer[5] = 128 - 128;
+                                    buffer[9] = 0 - 128;
+                                    buffer[13] = 0 - 128;
+                                    //LED AV GAUCHE
+                                    buffer[6] = 128 - 128;
+                                    buffer[10] = 128 - 128;
+                                    buffer[14] = 128 - 128;
+                                    //LED AV DROITE
+                                    buffer[7] = 128 - 128;
+                                    buffer[11] = 128 - 128;
+                                    buffer[15] = 128 - 128;
+                                    sleep(300);
+                                }
+                                else{
+                                    //LED AR GAUCHE
+                                    buffer[4] = 128 - 128;
+                                    buffer[8] = 0 - 128;
+                                    buffer[12] = 0 - 128;
+                                    //LED AR DROITE
+                                    buffer[5] = 128 - 128;
+                                    buffer[9] = 0 - 128;
+                                    buffer[13] = 0 - 128;
+                                    //LED AV GAUCHE
+                                    buffer[6] = 255 - 128;
+                                    buffer[10] = 255 - 128;
+                                    buffer[14] = 255 - 128;
+                                    //LED AV DROITE
+                                    buffer[7] = 255 - 128;
+                                    buffer[11] = 255 - 128;
+                                    buffer[15] = 255 - 128;
+                                    sleep(300);
+                                }
+
+                            }
+                            else {
+                                //LED AR GAUCHE
+                                buffer[4] = 0 - 128;
+                                buffer[8] = 0 - 128;
+                                buffer[12] = 0 - 128;
+                                //LED AR DROITE
+                                //buffer[5] = 0 - 128;
+                                //buffer[9] = 0 - 128;
+                                //buffer[13] = 0 - 128;
+                                //LED AV GAUCHE
+                                buffer[6] = 0 - 128;
+                                buffer[10] = 0 - 128;
+                                buffer[14] = 0 - 128;
+                                //LED AV DROITE
+                                //buffer[7] = 0 - 128;
+                                //buffer[11] = 0 - 128;
+                                //buffer[15] = 0 - 128;
+                                sleep(300);
+                            }
+                        }
+                        else if(mControlView.ClignDroite){
+                            //LED AR GAUCHE
+                            //buffer[4] = 0 - 128;
+                            //buffer[8] = 0 - 128;
+                            //buffer[12] = 0 - 128;
+                            //LED AR DROITE
+                            buffer[5] = 120 - 128;
+                            buffer[9] = 50 - 128;
+                            buffer[13] = 0 - 128;
+                            //LED AV GAUCHE
+                            //buffer[6] = 0 - 128;
+                            //buffer[10] = 0 - 128;
+                            //buffer[14] = 0 - 128;
+                            //LED AV DROITE
+                            buffer[7] = 120 - 128;
+                            buffer[11] = 50 - 128;
                             buffer[15] = 0 - 128;
-                            sleep(300);
+
+                            //BREAK
+                            sleep(500);
+                            if(mControlView.Phare || mControlView.PleinPhare){
+                                if(mControlView.Phare)
+                                {
+                                    //LED AR GAUCHE
+                                    buffer[4] = 128 - 128;
+                                    buffer[8] = 0 - 128;
+                                    buffer[12] = 0 - 128;
+                                    //LED AR DROITE
+                                    buffer[5] = 128 - 128;
+                                    buffer[9] = 0 - 128;
+                                    buffer[13] = 0 - 128;
+                                    //LED AV GAUCHE
+                                    buffer[6] = 128 - 128;
+                                    buffer[10] = 128 - 128;
+                                    buffer[14] = 128 - 128;
+                                    //LED AV DROITE
+                                    buffer[7] = 128 - 128;
+                                    buffer[11] = 128 - 128;
+                                    buffer[15] = 128 - 128;
+                                    sleep(300);
+                                }
+                                else{
+                                    //LED AR GAUCHE
+                                    buffer[4] = 128 - 128;
+                                    buffer[8] = 0 - 128;
+                                    buffer[12] = 0 - 128;
+                                    //LED AR DROITE
+                                    buffer[5] = 128 - 128;
+                                    buffer[9] = 0 - 128;
+                                    buffer[13] = 0 - 128;
+                                    //LED AV GAUCHE
+                                    buffer[6] = 255 - 128;
+                                    buffer[10] = 255 - 128;
+                                    buffer[14] = 255 - 128;
+                                    //LED AV DROITE
+                                    buffer[7] = 255 - 128;
+                                    buffer[11] = 255 - 128;
+                                    buffer[15] = 255 - 128;
+                                    sleep(300);
+                                }
+
+                            }
+                            else{
+                                //LED AR GAUCHE
+                                //buffer[4] = 0 - 128;
+                                //buffer[8] = 0 - 128;
+                                //buffer[12] = 0 - 128;
+                                //LED AR DROITE
+                                buffer[5] = 0 - 128;
+                                buffer[9] = 0 - 128;
+                                buffer[13] = 0 - 128;
+                                //LED AV GAUCHE
+                                //buffer[6] = 0 - 128;
+                                //buffer[10] = 0 - 128;
+                                //buffer[14] = 0 - 128;
+                                //LED AV DROITE
+                                buffer[7] = 0 - 128;
+                                buffer[11] = 0 - 128;
+                                buffer[15] = 0 - 128;
+                                sleep(300);
+                            }
+
+                        }
+
+                        if(mControlView.Phare)
+                        {
+                            if(mControlView.PleinPhare){
+                                //LED AR GAUCHE
+                                buffer[4] = 128 - 128;
+                                buffer[8] = 0 - 128;
+                                buffer[12] = 0 - 128;
+                                //LED AR DROITE
+                                buffer[5] = 128 - 128;
+                                buffer[9] = 0 - 128;
+                                buffer[13] = 0 - 128;
+                                //LED AV GAUCHE
+                                buffer[6] = 255 - 128;
+                                buffer[10] = 255 - 128;
+                                buffer[14] = 255 - 128;
+                                //LED AV DROITE
+                                buffer[7] = 255 - 128;
+                                buffer[11] = 255 - 128;
+                                buffer[15] = 255 - 128;
+                            }
+                            else{
+                                //LED AR GAUCHE
+                                buffer[4] = 128 - 128;
+                                buffer[8] = 0 - 128;
+                                buffer[12] = 0 - 128;
+                                //LED AR DROITE
+                                buffer[5] = 128 - 128;
+                                buffer[9] = 0 - 128;
+                                buffer[13] = 0 - 128;
+                                //LED AV GAUCHE
+                                buffer[6] = 128 - 128;
+                                buffer[10] = 128 - 128;
+                                buffer[14] = 128 - 128;
+                                //LED AV DROITE
+                                buffer[7] = 128 - 128;
+                                buffer[11] = 128 - 128;
+                                buffer[15] = 128 - 128;
+                            }
+
+                        }
+                        else if (mControlView.PleinPhare == true){
+                            //LED AR GAUCHE
+                            //buffer[4] = 128 - 128;
+                            //buffer[8] = 0 - 128;
+                            //buffer[12] = 0 - 128;
+                            //LED AR DROITE
+                            //buffer[5] = 128 - 128;
+                            //buffer[9] = 0 - 128;
+                            //buffer[13] = 0 - 128;
+                            //LED AV GAUCHE
+                            buffer[6] = 255 - 128;
+                            buffer[10] = 255 - 128;
+                            buffer[14] = 255 - 128;
+                            //LED AV DROITE
+                            buffer[7] = 255 - 128;
+                            buffer[11] = 255 - 128;
+                            buffer[15] = 255 - 128;
                         }
                         else{
                             //LED AR GAUCHE
@@ -204,6 +399,7 @@ public class VehiculeControl extends Activity {
                             buffer[11] = 0 - 128;
                             buffer[15] = 0 - 128;
                         }
+
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
