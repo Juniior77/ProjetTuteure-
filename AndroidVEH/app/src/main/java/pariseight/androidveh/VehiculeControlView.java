@@ -47,6 +47,9 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
     public boolean Warning = false;
     public boolean Phare = false;
     public boolean PleinPhare = false;
+    public boolean FeuStop = true;
+    public boolean ActionTourner1 = false;
+    public boolean ActionTourner2 = false;
 
     public VehiculeControlView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -191,8 +194,6 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
                 Log.i("REPERE_BOUTON_WARNING", "HELLO TU EST SUR LE BOUTON CLIGNOTANT WARNING :)");
             }
         }
-
-
         Log.i("ACC", "Acceleration: " + repereAcceleration);
         return true;
     }
@@ -205,11 +206,15 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
         drawFeuVert(canvas);
         drawFeuBleu(canvas);
         drawWarning(canvas);
-        if(!onMove)
-            drawJoyAcc(canvas);
-        if(onMove)
+        if(onMove) {
             drawJoyAccMove(canvas);
-
+            FeuStop = false;
+        }
+        else
+        {
+            drawJoyAcc(canvas);
+            FeuStop = true;
+        }
     }
 
     public void drawRepereAcc(Canvas canvas){
