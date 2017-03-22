@@ -7,8 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ImageButton;
 
 /**
  * Created by Guillaume on 28/02/2017.
@@ -20,8 +22,34 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
     private Resources mRes;
     private Context mContext;
     private Bitmap repereAcc;
+    private Bitmap mRepereAcc;
     private Bitmap joyAcc;
+    private Bitmap mJoyAcc;
+    private Bitmap Gauche;
+    private Bitmap mGauche;
+    private Bitmap Droite;
+    private Bitmap mDroite;
+    private Bitmap FeuBleu;
+    private Bitmap mFeuBleu;
+    private Bitmap FeuVert;
+    private Bitmap mFeuVert;
+    private Bitmap FeuDetresse;
+    private Bitmap mFeuDetresse;
+
     public Thread cv_thread;
+    public int posY;
+    private int posX;
+    private boolean onMove = false;
+    private int ptZero;
+    public float repereAcceleration;
+    public boolean ClignGauche = false;
+    public boolean ClignDroite = false;
+    public boolean Warning = false;
+    public boolean Phare = false;
+    public boolean PleinPhare = false;
+    public boolean FeuStop = true;
+    public boolean ActionTourner1 = false;
+    public boolean ActionTourner2 = false;
 
     public VehiculeControlView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -31,9 +59,6 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
         mContext = context;
         mRes = mContext.getResources();
         cv_thread = new Thread(this);
-
-        repereAcc = BitmapFactory.decodeResource(mRes, R.drawable.accelerationrect);
-        joyAcc = BitmapFactory.decodeResource(mRes, R.drawable.accelerationpoint);
 
         if ((cv_thread != null) && (!cv_thread.isAlive())) {
             cv_thread.start();
@@ -45,7 +70,21 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-
+        repereAcc = BitmapFactory.decodeResource(mRes, R.drawable.accelerationrect);
+        mRepereAcc = Bitmap.createScaledBitmap(repereAcc, 250, (getHeight() - 70), true);
+        joyAcc = BitmapFactory.decodeResource(mRes, R.drawable.accelerationpoint);
+        mJoyAcc = Bitmap.createScaledBitmap(joyAcc, 270, 80, true);
+        ptZero = getHeight() / 2;
+        Gauche = BitmapFactory.decodeResource(mRes, R.drawable.gauche150);
+        mGauche = Bitmap.createScaledBitmap(Gauche, 100, 100, true);
+        Droite = BitmapFactory.decodeResource(mRes, R.drawable.droite150);
+        mDroite = Bitmap.createScaledBitmap(Droite, 100, 100, true);
+        FeuBleu = BitmapFactory.decodeResource(mRes, R.drawable.feuxbleu);
+        mFeuBleu = Bitmap.createScaledBitmap(FeuBleu, 100, 100, true);
+        FeuVert = BitmapFactory.decodeResource(mRes, R.drawable.feuvert);
+        mFeuVert = Bitmap.createScaledBitmap(FeuVert, 100, 100, true);
+        FeuDetresse = BitmapFactory.decodeResource(mRes, R.drawable.danger);
+        mFeuDetresse = Bitmap.createScaledBitmap(FeuDetresse, 100, 100, true);
     }
 
     @Override
@@ -82,12 +121,132 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
         }
     }
 
+    public boolean onTouchEvent(MotionEvent event){
+        posX = (int)event.getX();
+        posY = (int)event.getY();
+
+        if(posX > getWidth() - 300)
+        {
+            switch (event.getAction()){
+                case MotionEvent.ACTION_DOWN:
+                    onMove = true;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    repereAcceleration = (ptZero - posY) / 2;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    onMove = false;
+                    repereAcceleration = 0;
+                    break;
+            }
+        }
+        else{
+            onMove = false;
+            repereAcceleration = 0;
+        }
+
+        if(event.getAction() == MotionEvent.ACTION_UP){
+            if(posX > (getWidth()/2)-(getWidth()/4) && posY > 100 && posX < (getWidth()/2)-(getWidth()/4)+100 && posY < 100+100)
+            {
+                //BOUTON GAUCHE
+                if(ClignGauche == false)
+                {
+                    ClignGauche = true;
+                    ClignDroite = false;
+                }
+                else
+                    ClignGauche = false;
+                Log.i("REPERE_BOUTON_GAUCHE", "HELLO TU EST SUR LE BOUTON CLIGNOTANT GAUCHE :)");
+            }
+            else if(posX > (getWidth()/2)+(getWidth()/4) && posY > 100 && posX < (getWidth()/2)+(getWidth()/4)+100 && posY < 100+100)
+            {
+                //BOUTON DROITE
+                if(ClignDroite == false){
+                    ClignDroite = true;
+                    ClignGauche = false;
+                }
+                else
+                    ClignDroite = false;
+                Log.i("REPERE_BOUTON_DROIT", "HELLO TU EST SUR LE BOUTON CLIGNOTANT DROIT :)");
+            }
+            else if(posX > (getWidth()/2)-(getWidth()/8) && posY > 100 && posX < (getWidth()/2)-(getWidth()/8)+100 && posY < 100+100){
+                //BOUTON FEU VERT
+                if(Phare == false)
+                    Phare = true;
+                else
+                    Phare = false;
+                Log.i("REPERE_BOUTON_VERT", "HELLO TU EST SUR LE BOUTON FEU VERT :)");
+            }
+            else if(posX > (getWidth()/2)+(getWidth()/8) && posY > 100 && posX < (getWidth()/2)+(getWidth()/8)+100 && posY < 100+100){
+                //BOUTON FEU BLEU
+                if(PleinPhare == false)
+                    PleinPhare = true;
+                else
+                    PleinPhare = false;
+                Log.i("REPERE_BOUTON_BLEU", "HELLO TU EST SUR LE BOUTON FEU BLEU :)");
+            }
+            else if(posX > (getWidth()/2) && posY > 100 && posX < (getWidth()/2)+100 && posY < 100+100){
+                //BOUTON WARNING
+                if(Warning == false)
+                    Warning = true;
+                else
+                    Warning = false;
+                Log.i("REPERE_BOUTON_WARNING", "HELLO TU EST SUR LE BOUTON CLIGNOTANT WARNING :)");
+            }
+        }
+        Log.i("ACC", "Acceleration: " + repereAcceleration);
+        return true;
+    }
+
     private  void nDraw(Canvas canvas){
         canvas.drawRGB(44, 44, 44);
         drawRepereAcc(canvas);
+        drawGauche(canvas);
+        drawDroite(canvas);
+        drawFeuVert(canvas);
+        drawFeuBleu(canvas);
+        drawWarning(canvas);
+        if(onMove) {
+            drawJoyAccMove(canvas);
+            FeuStop = false;
+        }
+        else
+        {
+            drawJoyAcc(canvas);
+            FeuStop = true;
+        }
     }
 
     public void drawRepereAcc(Canvas canvas){
-        canvas.drawBitmap(repereAcc, (getWidth()/2) - (repereAcc.getWidth()/2), (getHeight()/2) - (repereAcc.getHeight()/2), null);
+        canvas.drawBitmap(mRepereAcc, (getWidth() - 150) - (mRepereAcc.getWidth()/2), (getHeight()/2) - (mRepereAcc.getHeight()/2), null);
     }
+
+    public void drawJoyAcc(Canvas canvas){
+        canvas.drawBitmap(mJoyAcc, (getWidth() - 150) - (mJoyAcc.getWidth()/2), (getHeight()/2) - (mJoyAcc.getHeight()/2), null);
+    }
+
+    public void drawJoyAccMove(Canvas canvas){
+        canvas.drawBitmap(mJoyAcc, (getWidth() - 150) - (mJoyAcc.getWidth()/2), posY , null);
+    }
+
+    public void drawGauche(Canvas canvas){
+        canvas.drawBitmap(mGauche, (getWidth()/2) - (getWidth()/4), 100, null);
+    }
+
+    public void drawDroite(Canvas canvas){
+        canvas.drawBitmap(mDroite, (getWidth()/2) + (getWidth()/4), 100, null);
+    }
+
+    public void drawFeuVert(Canvas canvas){
+        canvas.drawBitmap(mFeuVert, (getWidth()/2) - (getWidth()/8), 100, null);
+    }
+
+    public void drawFeuBleu(Canvas canvas){
+        canvas.drawBitmap(mFeuBleu, (getWidth()/2) + (getWidth()/8), 100, null);
+    }
+
+    public void drawWarning(Canvas canvas){
+        canvas.drawBitmap(mFeuDetresse, (getWidth()/2), 100, null);
+    }
+
 }

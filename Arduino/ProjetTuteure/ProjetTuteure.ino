@@ -6,6 +6,7 @@
 */
 
 #include <Servo.h>
+#include <FastLED.h>
 
 Servo myservo;//create a object of servo,named as myservo
 
@@ -15,6 +16,8 @@ Servo myservo;//create a object of servo,named as myservo
 #define MOTOR_L_2 9 // left MOTOR_L_2 attach to pin9
 #define MOTOR_R_1 10 //right  MOTOR_R_1 attach to pin10
 #define MOTOR_R_2 11 //right MOTOR_R_2 attach to pin11
+#define LED_PIN   13
+CRGB leds[4];
 
 #define LIGHT_LEFT_1_PIN  A0 //attach the left first Tracking module pinA0 to A0
 #define LIGHT_LEFT_2_PIN  A1 //attach the left second Tracking module pinA0 to A1
@@ -22,10 +25,20 @@ Servo myservo;//create a object of servo,named as myservo
 #define LIGHT_RIGHT_1_PIN A3 //attach the right  second Tracking module pinA0 to A3
 #define LIGHT_RIGHT_2_PIN A4 //attach the right first Tracking module pinA0 to A4
 
+<<<<<<< HEAD
 //byte sensorValue[5];
 
 byte data[4];            //Variable for storing received data
 
+=======
+<<<<<<< HEAD
+byte dataIn[16];            //Variable for storing received data
+=======
+byte sensorValue[5];
+
+byte data[4];            //Variable for storing received data
+>>>>>>> origin/Totoss-Path
+>>>>>>> origin/Totoss-Path
 int dataAvAr;
 int dataMotor1;
 int dataMotor2;
@@ -45,7 +58,18 @@ void setup()
     pinMode(MOTOR_L_2, OUTPUT);
     pinMode(MOTOR_R_1, OUTPUT);
     pinMode(MOTOR_R_2, OUTPUT);
+    
     myservo.attach(2);//servo attach to pin2
+
+    FastLED.addLeds<WS2811, LED_PIN, RGB>(leds, 4);
+    for(int i = 0; i < 4; i++)
+    {
+      leds[i].r = 0;
+      leds[i].g = 0;
+      leds[i].b = 0;
+    }
+    FastLED.show();
+    Serial.print("Module prêt ! \n");
 }
 
 
@@ -119,9 +143,22 @@ void sendsensorsvalue(){
 }
 */
 
+<<<<<<< HEAD
 void loop(){
    if(Serial.available() > 0){      // Send data only when you receive data:
     
+=======
+void loop()
+{
+  Serial.flush();
+   if(Serial.available())      // Send data only when you receive data:
+   {
+<<<<<<< HEAD
+      Serial.readBytes(dataIn, 16);        //Read the incoming data & store into data
+
+      for(int i = 0; i < 16; i++)
+=======
+>>>>>>> origin/Totoss-Path
     digitalWrite(LED_BUILTIN, HIGH);
     
     Serial.readBytes(data, 4);        //Read the incoming data & store into data
@@ -151,6 +188,7 @@ Serial.print(dataMotor1);
 Serial.print("\n");
 */      
       
+<<<<<<< HEAD
     if(dataMotor2 <= 255 && dataMotor2 >127){
       dataMotor2 -= 128;
     }else{
@@ -179,6 +217,49 @@ Serial.print("\n");
   
   CAR_move(dataAvAr, dataMotor1, dataMotor2, dataServoDir);
   }
+=======
+      if(dataMotor2 <= 255 && dataMotor2 >127)
+      {
+        dataMotor2 -= 128;
+      }
+      else
+>>>>>>> origin/Totoss-Path
+      {
+          if(dataIn[i] <= 255 && dataIn[i] >127)
+          {
+            dataIn[i] -= 128;
+          }
+          else
+          {
+            dataIn[i] += 128;
+          }
+      }
+
+      
+      dataAvAr = dataIn[0];
+      dataMotor1 = dataIn[1];
+      dataMotor2 = dataIn[2];
+      dataServoDir = dataIn[3];
+
+      leds[0].r = dataIn[4];
+      leds[1].r = dataIn[5];
+      leds[2].r = dataIn[6];
+      leds[3].r = dataIn[7];
+
+      leds[0].g = dataIn[8];
+      leds[1].g = dataIn[9];
+      leds[2].g = dataIn[10];
+      leds[3].g = dataIn[11];
+
+      leds[0].b = dataIn[12];
+      leds[1].b = dataIn[13];
+      leds[2].b = dataIn[14];
+      leds[3].b = dataIn[15];
+     
+      CAR_move(dataAvAr, dataMotor1, dataMotor2, dataServoDir);
+      FastLED.show();
+   }
+>>>>>>> origin/Totoss-Path
 }
 
 
