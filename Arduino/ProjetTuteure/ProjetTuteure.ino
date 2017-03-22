@@ -95,18 +95,18 @@ void loop()
 
       leds[0].r = dataIn[4];
       leds[1].r = dataIn[5];
-      leds[2].r = dataIn[6];
-      leds[3].r = dataIn[7];
+      leds[3].r = dataIn[6];
+      leds[2].r = dataIn[7];
 
       leds[0].g = dataIn[8];
       leds[1].g = dataIn[9];
-      leds[2].g = dataIn[10];
-      leds[3].g = dataIn[11];
+      leds[3].g = dataIn[10];
+      leds[2].g = dataIn[11];
 
       leds[0].b = dataIn[12];
       leds[1].b = dataIn[13];
-      leds[2].b = dataIn[14];
-      leds[3].b = dataIn[15];
+      leds[3].b = dataIn[14];
+      leds[2].b = dataIn[15];
      
       CAR_move(dataAvAr, dataMotor1, dataMotor2, dataServoDir);
       FastLED.show();
