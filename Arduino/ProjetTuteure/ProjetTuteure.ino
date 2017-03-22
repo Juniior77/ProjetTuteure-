@@ -22,13 +22,17 @@ Servo myservo;//create a object of servo,named as myservo
 #define LIGHT_RIGHT_1_PIN A3 //attach the right  second Tracking module pinA0 to A3
 #define LIGHT_RIGHT_2_PIN A4 //attach the right first Tracking module pinA0 to A4
 
-byte sensorValue[5];
+//byte sensorValue[5];
 
 byte data[4];            //Variable for storing received data
+
 int dataAvAr;
 int dataMotor1;
 int dataMotor2;
 int dataServoDir;
+
+int BLACK = 758;
+
 void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
@@ -43,6 +47,8 @@ void setup()
     pinMode(MOTOR_R_2, OUTPUT);
     myservo.attach(2);//servo attach to pin2
 }
+
+
 void CAR_move(int direction, int speed_left, int speed_right, int direct)
 {
     switch(direction)
@@ -61,13 +67,48 @@ void CAR_move(int direction, int speed_left, int speed_right, int direct)
     analogWrite(ENB_PIN,speed_right);//write speed_right to ENB_PIN,if speed_right is high,allow right motor rotate
     myservo.write(direct);
 }
+
 void followline(){
-  sensorValue[0] = A0;
-  sensorValue[1] = A1;
-  sensorValue[2] = A2;
-  sensorValue[3] = A3;
-  sensorValue[4] = A4;
+  int sensor;
+  
+  if (analogRead(LIGHT_LEFT_1_PIN) > BLACK)
+    sensor = 1;
+  else if (analogRead(LIGHT_LEFT_2_PIN) > BLACK)
+    sensor = 2;
+  else if (analogRead(LIGHT_MIDDLE_PIN) > BLACK)
+    sensor = 3;
+  else if (analogRead(LIGHT_RIGHT_2_PIN) > BLACK)
+    sensor = 4;
+  else if (analogRead(LIGHT_RIGHT_1_PIN) > BLACK)
+    sensor = 5;
+  switch (sensor)
+  {
+    case 1: 
+    dataServoDir = 60;
+    break;
+    
+    case 2:  
+    dataServoDir = 75;  
+    break;
+  
+    case 3: 
+    dataServoDir = 90;     
+    break;
+   
+    case 4:
+    dataServoDir = 105; 
+    break;
+    
+    case 5: 
+    dataServoDir = 120;
+    break;
+    
+    default: 
+    break;
+  }
 }
+
+/*
 void sendsensorsvalue(){
       for(int i=0; i<5; i++){ 
       Serial.print(sensorValue[i]);
@@ -76,72 +117,68 @@ void sendsensorsvalue(){
       Serial.print('~');
       delay(10);
 }
+*/
 
-void loop()
-{
-   if(Serial.available() > 0)      // Send data only when you receive data:
-   {
+void loop(){
+   if(Serial.available() > 0){      // Send data only when you receive data:
+    
     digitalWrite(LED_BUILTIN, HIGH);
-    sendsensorsvalue();
-      Serial.readBytes(data, 4);        //Read the incoming data & store into data
-      dataAvAr = data[0];
-      dataMotor1 = data[1];
-      dataMotor2 = data[2];
-      dataServoDir = data[3];
+    
+    Serial.readBytes(data, 4);        //Read the incoming data & store into data
+    dataAvAr = data[0];
+    dataMotor1 = data[1];
+    dataMotor2 = data[2];
+    dataServoDir = data[3]; 
+
+    //A décommenter pour le suivi de ligne
+    //followline()
+
+    if(dataAvAr <= 255 && dataAvAr >127){
+      dataAvAr -= 128;
+    }else{
+      dataAvAr += 128;
+    }
       
-      if(dataAvAr <= 255 && dataAvAr >127)
-      {
-        dataAvAr -= 128;
-      }
-      else
-      {
-        dataAvAr += 128;
-      }
-      
-      if(dataMotor1 <= 255 && dataMotor1 >127)
-      {
-        dataMotor1 -= 128;
-      }
-      else
-      {
-        dataMotor1 += 128;
-      }
+    if(dataMotor1 <= 255 && dataMotor1 >127){
+      dataMotor1 -= 128;
+    }else{
+      dataMotor1 += 128;
+    }
+
 /*      
 Serial.print("Moteur1: ");
 Serial.print(dataMotor1);
 Serial.print("\n");
 */      
       
-      if(dataMotor2 <= 255 && dataMotor2 >127)
-      {
-        dataMotor2 -= 128;
-      }
-      else
-      {
-        dataMotor2 += 128;
-      }
+    if(dataMotor2 <= 255 && dataMotor2 >127){
+      dataMotor2 -= 128;
+    }else{
+      dataMotor2 += 128;
+    }
+
 /*
 Serial.print("Moteur2: ");
 Serial.print(dataMotor2);
 Serial.print("\n");
-*/      
+*/    
       
-      if(dataServoDir <= 255 && dataServoDir >127)
-      {
-        dataServoDir -= 128;
-      }
-      else
-      {
-        dataServoDir += 128;
-      }
+    if(dataServoDir <= 255 && dataServoDir >127){
+      dataServoDir -= 128;
+    }else{
+      dataServoDir += 128;
+    }
+
 /*
 Serial.print("Servo: ");
 Serial.print(dataServoDir);
 Serial.print("\n");
-*/              
-    digitalWrite(LED_BUILTIN, LOW);
-      CAR_move(dataAvAr, dataMotor1, dataMotor2, dataServoDir);
-   }
+*/
+              
+  digitalWrite(LED_BUILTIN, LOW);
+  
+  CAR_move(dataAvAr, dataMotor1, dataMotor2, dataServoDir);
+  }
 }
 
 
