@@ -7,6 +7,12 @@
 
 #include <Servo.h>
 #include <FastLED.h>
+#include <Ultrasonic.h>
+
+void readDistance();
+void startParking();
+void manoeuvre();
+//void CAR_move(int direction, int speed_left, int speed_right, int direct);
 
 Servo myservo;//create a object of servo,named as myservo
 
@@ -17,19 +23,38 @@ Servo myservo;//create a object of servo,named as myservo
 #define MOTOR_R_1 10 //right  MOTOR_R_1 attach to pin10
 #define MOTOR_R_2 11 //right MOTOR_R_2 attach to pin11
 #define LED_PIN   13
-CRGB leds[4];
 
+#define LIGHT_LEFT_1_PIN  A0 //attach the left first Tracking module pinA0 to A0
+#define LIGHT_LEFT_2_PIN  A1 //attach the left second Tracking module pinA0 to A1
+#define LIGHT_MIDDLE_PIN  A2 //attach the module Tracking module pinA0 to A2
+#define LIGHT_RIGHT_1_PIN A3 //attach the right  second Tracking module pinA0 to A3
+#define LIGHT_RIGHT_2_PIN A4 //attach the right first Tracking module pinA0 to A4
+
+#define repPlaceIdeal 800
+#define repPlaceManoeuvre 600
+
+CRGB leds[4];
+Ultrasonic ultraAV(7, 12);    //Capteur AV
+Ultrasonic ultraAVD(4, 3);
 
 byte dataIn[16];            //Variable for storing received data
+
 int dataAvAr;
 int dataMotor1;
 int dataMotor2;
 int dataServoDir;
+int dstAV;
+int dstAVD;
+
+int PlaceManoeuvre = repPlaceManoeuvre;
+int PlaceIdeal = repPlaceIdeal; //Pour une vitesse de 150 sur chaque moteur
+
 void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
   
-    Serial.begin(115200);   //Sets the baud for serial data transmission    
+//    Serial.begin(115200);   //Sets the baud for serial data transmission    
+      Serial.begin(9600);
 
     pinMode(ENA_PIN, OUTPUT);
     pinMode(ENB_PIN, OUTPUT);
@@ -49,6 +74,7 @@ void setup()
     }
     FastLED.show();
     Serial.print("Module prêt ! \n");
+    startParking();
 }
 void CAR_move(int direction, int speed_left, int speed_right, int direct)
 {
@@ -66,10 +92,139 @@ void CAR_move(int direction, int speed_left, int speed_right, int direct)
     }
     analogWrite(ENA_PIN,speed_left);//write speed_left to ENA_PIN,if speed_left is high,allow left motor rotate
     analogWrite(ENB_PIN,speed_right);//write speed_right to ENB_PIN,if speed_right is high,allow right motor rotate
-    myservo.write(direct);
+    myservo.write(direct+6);
 }
+
+void readDistance(){
+  dstAV = ultraAV.distanceRead();
+  dstAVD = ultraAVD.distanceRead();
+}
+void startParking(){
+  
+  int dstBefore = ultraAVD.distanceRead();  //Largeur avant de trouver place
+  int timeVoiture = 0;    //Temps que met la voiture pour trouver la longueur ideal de la place
+  int dstEnPlus = 0;
+  
+    Serial.print("Distance Before: ");
+    Serial.print(dstBefore);
+    Serial.print("\n");
+    readDistance();
+    
+  //Tant que la distance du mur est pareil
+  while(dstAVD > (dstBefore - 3) && dstAVD < (dstBefore + 3))
+  { 
+    timeVoiture++;
+    readDistance();
+    //La voiture avance doucement tant que la distance n'augmente pas ou diminue pas
+    CAR_move(1, 150, 150, 90);
+  }
+  
+  //On stoppe la voiture
+  CAR_move(1, 0, 0, 90);
+  delay(200);
+
+  //On lie la distance AVD pour tester lecartement de la place de parking dstDroit2
+  int largeurPlace = ultraAVD.distanceRead();
+    Serial.print("Largeur Place: ");
+    Serial.print(largeurPlace);
+    Serial.print("\n");
+    delay(500);
+    
+  //Si dstDroit2 est supérieur a dstDroit1 alors on engage la procédure
+  if(largeurPlace > dstBefore)
+  {
+    int dstPlaceLibre = 0;    // Incrémenter pour tester si la voiture passe dans la place
+    //Il y à peut etre une place
+    //La voiture avance tant que la distance est plus ou moin pareil
+    while(dstPlaceLibre <= PlaceIdeal)   //On garde une marge d'erreur de -1 valeur +1
+    {
+      //La voiture avance jusqu'a ce quon soit sur qu'il y est la place de se garer
+      dstPlaceLibre++;
+      dstAVD = ultraAVD.distanceRead();
+      CAR_move(1, 150, 150, 90);
+    }
+    CAR_move(1, 0, 0, 90);
+    Serial.print("dstPlaceLibre: ");
+    Serial.print(dstPlaceLibre);
+    Serial.print("\n");
+    delay(500);
+    
+    Serial.print("dstEnPlus: ");
+    Serial.print(dstEnPlus);
+    Serial.print("\n");
+    delay(500);
+    
+    
+    while(dstEnPlus <= PlaceManoeuvre){
+      CAR_move(1, 150, 150, 90);
+      dstAVD = ultraAVD.distanceRead();
+      dstEnPlus++;
+    }
+   
+    CAR_move(1, 0, 0, 90);
+
+Serial.print("dstEnPlus: ");
+    Serial.print(dstEnPlus);
+    Serial.print("\n");
+    delay(500);
+   
+    //Ici la voiture est positionner pour manoeuvré
+    manoeuvre();
+  }
+  else
+  {
+    //Il n'y a pas de place, la distance est plus court que l'initial
+    PlaceManoeuvre = repPlaceManoeuvre;
+    PlaceIdeal = repPlaceIdeal;
+  }
+}
+
+void manoeuvre(){
+  int marcheAR1 = 275;
+  int marcheAR2 = 50;
+  int marcheAR3 = 300-;
+  
+  CAR_move(0, 0, 0, 115);
+  delay(100);
+  while(marcheAR1 != 0)
+  {
+    marcheAR1--;
+    dstAVD = ultraAVD.distanceRead();
+    CAR_move(0,150,150,115);
+  }
+  CAR_move(0, 0, 0, 105);
+  delay(100);
+
+    while(marcheAR2 != 0)
+  {
+    marcheAR2--;
+    dstAVD = ultraAVD.distanceRead();
+    CAR_move(0,150,150,90);
+  }
+
+  CAR_move(0, 0, 0, 65);
+  delay(100);
+
+    while(marcheAR3 != 0)
+  {
+    marcheAR3--;
+    dstAVD = ultraAVD.distanceRead();
+    CAR_move(0,150,150,65);
+  }
+  
+ /* while(marcheAR2 != 0)
+  {
+    marcheAR2--;
+    dstAVD = ultraAVD.distanceRead();
+    CAR_move(0,150,150,105);
+  }
+  delay(100);*/
+  CAR_move(0, 0, 0, 90);
+}
+
 void loop()
 {
+/*
   Serial.flush();
    if(Serial.available())      // Send data only when you receive data:
    {
@@ -110,7 +265,6 @@ void loop()
      
       CAR_move(dataAvAr, dataMotor1, dataMotor2, dataServoDir);
       FastLED.show();
-   }
+      
+   }*/
 }
-
-
