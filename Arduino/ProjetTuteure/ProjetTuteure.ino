@@ -34,8 +34,8 @@ Servo myservo;//create a object of servo,named as myservo
 #define repPlaceIdeal 450
 #define repPlaceManoeuvre 90
 
-#define kp 4
-#define ki 0.4
+#define kp 8
+#define ki 0.2
 #define kd 0
 
 
@@ -240,15 +240,11 @@ void manoeuvre(){
   return loop;
 }
 void calculPID(){
-if(PID < -30){
-  P = Pold;
+if(PID <= -30){
   I = Iold;
-  D = Dold;
 }
-else if(PID > 30){
-  P = Pold;
+else if(PID >= 30){
   I = Iold;
-  D = Dold;
 }
 else{
   P = trajectoire;
