@@ -12,6 +12,7 @@
 void readDistance();
 void startParking();
 void manoeuvre();
+void avanceManoeuvre();
 //void CAR_move(int direction, int speed_left, int speed_right, int direct);
 
 Servo myservo;//create a object of servo,named as myservo
@@ -30,14 +31,14 @@ Servo myservo;//create a object of servo,named as myservo
 #define LIGHT_RIGHT_1_PIN A3 //attach the right  second Tracking module pinA0 to A3
 #define LIGHT_RIGHT_2_PIN A4 //attach the right first Tracking module pinA0 to A4
 
-#define repPlaceIdeal 800
-#define repPlaceManoeuvre 600
+#define repPlaceIdeal 450
+#define repPlaceManoeuvre 90
 
 CRGB leds[4];
 Ultrasonic ultraAV(7, 12);    //Capteur AV
 Ultrasonic ultraAVD(4, 3);
 
-byte dataIn[16];            //Variable for storing received data
+byte dataIn[17];            //Variable for storing received data
 
 int dataAvAr;
 int dataMotor1;
@@ -53,8 +54,8 @@ void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
   
-//    Serial.begin(115200);   //Sets the baud for serial data transmission    
-      Serial.begin(9600);
+    Serial.begin(115200);   //Sets the baud for serial data transmission    
+//      Serial.begin(9600);
 
     pinMode(ENA_PIN, OUTPUT);
     pinMode(ENB_PIN, OUTPUT);
@@ -74,7 +75,6 @@ void setup()
     }
     FastLED.show();
     Serial.print("Module prêt ! \n");
-    startParking();
 }
 void CAR_move(int direction, int speed_left, int speed_right, int direct)
 {
@@ -98,6 +98,7 @@ void CAR_move(int direction, int speed_left, int speed_right, int direct)
 void readDistance(){
   dstAV = ultraAV.distanceRead();
   dstAVD = ultraAVD.distanceRead();
+  delay(10);
 }
 void startParking(){
   
@@ -105,9 +106,9 @@ void startParking(){
   int timeVoiture = 0;    //Temps que met la voiture pour trouver la longueur ideal de la place
   int dstEnPlus = 0;
   
-    Serial.print("Distance Before: ");
-    Serial.print(dstBefore);
-    Serial.print("\n");
+    //Serial.print("Distance Before: ");
+    //Serial.print(dstBefore);
+    //Serial.print("\n");
     readDistance();
     
   //Tant que la distance du mur est pareil
@@ -125,9 +126,9 @@ void startParking(){
 
   //On lie la distance AVD pour tester lecartement de la place de parking dstDroit2
   int largeurPlace = ultraAVD.distanceRead();
-    Serial.print("Largeur Place: ");
-    Serial.print(largeurPlace);
-    Serial.print("\n");
+    //Serial.print("Largeur Place: ");
+    //Serial.print(largeurPlace);
+    //Serial.print("\n");
     delay(500);
     
   //Si dstDroit2 est supérieur a dstDroit1 alors on engage la procédure
@@ -141,32 +142,32 @@ void startParking(){
       //La voiture avance jusqu'a ce quon soit sur qu'il y est la place de se garer
       dstPlaceLibre++;
       dstAVD = ultraAVD.distanceRead();
-      CAR_move(1, 150, 150, 90);
+      CAR_move(1, 170, 170, 90);
     }
     CAR_move(1, 0, 0, 90);
-    Serial.print("dstPlaceLibre: ");
-    Serial.print(dstPlaceLibre);
-    Serial.print("\n");
-    delay(500);
+    //Serial.print("dstPlaceLibre: ");
+    //Serial.print(dstPlaceLibre);
+    //Serial.print("\n");
+    delay(250);
     
-    Serial.print("dstEnPlus: ");
-    Serial.print(dstEnPlus);
-    Serial.print("\n");
-    delay(500);
+    //Serial.print("dstEnPlus: ");
+    //Serial.print(dstEnPlus);
+    //Serial.print("\n");
+    delay(250);
     
     
     while(dstEnPlus <= PlaceManoeuvre){
-      CAR_move(1, 150, 150, 90);
-      dstAVD = ultraAVD.distanceRead();
+      CAR_move(1, 170, 170, 90);
+      delay(10);
       dstEnPlus++;
     }
    
     CAR_move(1, 0, 0, 90);
 
-Serial.print("dstEnPlus: ");
-    Serial.print(dstEnPlus);
-    Serial.print("\n");
-    delay(500);
+    //Serial.print("dstEnPlus: ");
+    //Serial.print(dstEnPlus);
+    //Serial.print("\n");
+    delay(250);
    
     //Ici la voiture est positionner pour manoeuvré
     manoeuvre();
@@ -180,57 +181,52 @@ Serial.print("dstEnPlus: ");
 }
 
 void manoeuvre(){
-  int marcheAR1 = 275;
-  int marcheAR2 = 50;
-  int marcheAR3 = 300-;
+  int marcheAR1 = 95;
+  int marcheAR2 = 0;
+  int marcheAR3 = 95;
   
-  CAR_move(0, 0, 0, 115);
-  delay(100);
+  CAR_move(0, 0, 0, 120);
+  delay(250);
   while(marcheAR1 != 0)
   {
     marcheAR1--;
-    dstAVD = ultraAVD.distanceRead();
-    CAR_move(0,150,150,115);
+    //dstAVD = ultraAVD.distanceRead();
+    delay(10);
+    CAR_move(0,170,170,120);
   }
-  CAR_move(0, 0, 0, 105);
-  delay(100);
+  CAR_move(0, 0, 0, 90);
+  delay(250);
 
     while(marcheAR2 != 0)
   {
     marcheAR2--;
-    dstAVD = ultraAVD.distanceRead();
-    CAR_move(0,150,150,90);
+    //dstAVD = ultraAVD.distanceRead();
+    delay(10);
+    CAR_move(0,170,170,90);
   }
 
-  CAR_move(0, 0, 0, 65);
-  delay(100);
+  CAR_move(0, 0, 0, 60);
+  delay(250);
 
     while(marcheAR3 != 0)
   {
     marcheAR3--;
-    dstAVD = ultraAVD.distanceRead();
-    CAR_move(0,150,150,65);
+    //dstAVD = ultraAVD.distanceRead();
+    delay(10);
+    CAR_move(0,170,170,60);
   }
-  
- /* while(marcheAR2 != 0)
-  {
-    marcheAR2--;
-    dstAVD = ultraAVD.distanceRead();
-    CAR_move(0,150,150,105);
-  }
-  delay(100);*/
   CAR_move(0, 0, 0, 90);
 }
 
 void loop()
 {
-/*
+
   Serial.flush();
    if(Serial.available())      // Send data only when you receive data:
    {
-      Serial.readBytes(dataIn, 16);        //Read the incoming data & store into data
+      Serial.readBytes(dataIn, 17);        //Read the incoming data & store into data
 
-      for(int i = 0; i < 16; i++)
+      for(int i = 0; i < 17; i++)
       {
           if(dataIn[i] <= 255 && dataIn[i] >127)
           {
@@ -242,6 +238,7 @@ void loop()
           }
       }
 
+      if(dataIn[16] == 0){
       
       dataAvAr = dataIn[0];
       dataMotor1 = dataIn[1];
@@ -265,6 +262,10 @@ void loop()
      
       CAR_move(dataAvAr, dataMotor1, dataMotor2, dataServoDir);
       FastLED.show();
-      
-   }*/
+      }
+      else if(dataIn[16] == 1)
+      {
+        startParking();
+      }
+   }
 }
