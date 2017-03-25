@@ -35,8 +35,8 @@ Servo myservo;//create a object of servo,named as myservo
 #define repPlaceManoeuvre 90
 
 #define kp 8
-#define ki 0.2
-#define kd 0
+#define ki 0
+#define kd 16
 
 
 CRGB leds[4];
@@ -52,14 +52,11 @@ int dataServoDir;
 int dstAV;
 int dstAVD;
 int trajectoire;
-int oldTrajectoire;
-int P;
-int I;
-int D;
-  int Pold;
-  int Iold;
-  int Dold;
-int PID;
+int oldTrajectoire = 0;
+float P;
+float I;
+float D;
+float PID;
 
 int PlaceManoeuvre = repPlaceManoeuvre;
 int PlaceIdeal = repPlaceIdeal; //Pour une vitesse de 150 sur chaque moteur
@@ -137,7 +134,7 @@ void startParking(){
     timeVoiture++;
     readDistance();
     //La voiture avance doucement tant que la distance n'augmente pas ou diminue pas
-    CAR_move(1, 150, 150, 90);
+    CAR_move(1, 190 - PID, 190 - PID, 90);
   }
   
   //On stoppe la voiture
@@ -240,21 +237,15 @@ void manoeuvre(){
   return loop;
 }
 void calculPID(){
-if(PID <= -30){
-  I = Iold;
-}
-else if(PID >= 30){
-  I = Iold;
-}
-else{
+  if(PID < -30 || PID > 30)
+  {
+    I -= trajectoire;
+  }
   P = trajectoire;
-  I = I + trajectoire;
+  I += trajectoire;
   D = trajectoire - oldTrajectoire;
-}
   PID = (kp * P) + (ki * I) + (kd * D);
-  Pold = P;
-  Iold = I;
-  Dold = D;
+  oldTrajectoire = trajectoire;
 }
 void loop()
 {
@@ -313,7 +304,6 @@ else if(capt[0] > 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt
 else{
   trajectoire = 15;
 }
-oldTrajectoire = trajectoire;
 /*
 Serial.print("Capt1: ");
 Serial.print(capt[0]);
@@ -334,21 +324,21 @@ Serial.print("\n");
 Serial.print("Capt5: ");
 Serial.print(capt[4]);
 Serial.print("\n");
-Serial.print("\n");
+Serial.print("\n");*/
 Serial.print("Trajectoire: ");
 Serial.print(trajectoire);
-Serial.print("\n");*/
+Serial.print("\n");
 Serial.print("PID: ");
 Serial.print(PID);
 Serial.print("\n");
 
 if(trajectoire != 15){
     calculPID();
-  CAR_move(1, 170, 170, 90 + PID);
+  CAR_move(1, 160, 160, 90 + PID);
 }
 else
-  CAR_move(1, 0, 0, 90);
-
+  CAR_move(0, 0, 0, 90);
+//delay(1500);
 /*  Serial.flush();
    if(Serial.available())      // Send data only when you receive data:
    {
