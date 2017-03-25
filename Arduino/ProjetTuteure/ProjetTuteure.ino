@@ -59,6 +59,7 @@ int D;
 int PID;
 int servo_init = 90;
 int servo_pos = servo_init;
+int on = 1;
 
 int PlaceManoeuvre = repPlaceManoeuvre;
 int PlaceIdeal = repPlaceIdeal; //Pour une vitesse de 150 sur chaque moteur
@@ -302,7 +303,8 @@ else if(capt[0] > 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt
   trajectoire = 118;
 }
 else{
-  trajectoire = 0;
+  trajectoire = 90;
+  on = 0;
 }
 calculPID();
 
@@ -340,7 +342,7 @@ Serial.print("\n");
 Serial.print("PID: ");
 Serial.print(PID);
 Serial.print("\n");*/
-if(trajectoire != 0){
+if(on != 0){
   servo_pos += PID;
   CAR_move(1, 190, 190, servo_pos);
 }else
