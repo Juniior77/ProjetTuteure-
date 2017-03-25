@@ -44,7 +44,7 @@ Ultrasonic ultraAV(7, 12);    //Capteur AV
 Ultrasonic ultraAVD(4, 3);
 
 byte dataIn[17];            //Variable for storing received data
-int capt[5];
+long capt[5];
 int dataAvAr;
 int dataMotor1;
 int dataMotor2;
@@ -60,6 +60,11 @@ int PID;
 int servo_init = 90;
 int servo_pos = servo_init;
 int on = 1;
+
+long sensors_average;
+int sensors_sum;
+int set_point;
+int pos;
 
 int PlaceManoeuvre = repPlaceManoeuvre;
 int PlaceIdeal = repPlaceIdeal; //Pour une vitesse de 150 sur chaque moteur
@@ -87,6 +92,8 @@ void setup()
       leds[i].g = 0;
       leds[i].b = 0;
     }
+
+    set_point = analogRead(2);
     FastLED.show();
     Serial.print("Module prêt ! \n");
 }
@@ -240,23 +247,54 @@ void manoeuvre(){
   return loop;
 }
 
+void sensorsread(){
+  sensors_average = 0;
+  sensors_sum = 0;
+  for (int i = 0 ; i < 5 ; i++){
+    capt[i] = analogRead(i);
+
+    sensors_average += capt[i] * i * 1000;
+    sensors_sum += int(capt[i]);
+  }
+}
+
 void calculPID(){
+  pos = int(sensors_average / sensors_sum);
+  P = pos - set_point;
+  I += P;
+  D = P - Pold;
+  Pold = P;
+
+  PID = int(P * kp +  I * ki + D * kd);
+}
+
+void calc_turn(){
+  if (PID < -30) PID = -30;
+  if (PID > 30) PID = 30;
+
+  servo_pos = 90 + PID;
+}
+
+  
+  
+  /*
   P = trajectoire - servo_pos;
   I += P;
   D = P - Pold;
-  PID = (kp * P)+(ki * I) + (kd * D);
+  PID = (kp * P) + (ki * I) + (kd * D);
   Pold = P;
-}
+  */
 
 void loop()
 {
-  
-capt[4] = analogRead(LIGHT_LEFT_1_PIN);
-capt[3] = analogRead(LIGHT_LEFT_2_PIN);
-capt[2] = analogRead(LIGHT_MIDDLE_PIN); 
-capt[0] = analogRead(LIGHT_RIGHT_2_PIN);
-capt[1] = analogRead(LIGHT_RIGHT_1_PIN);
+  sensorsread();
+  calculPID();
+  calc_turn();
+  CAR_move(1, 190, 190, servo_pos);
+}
 
+  
+/*
 //0 0 0 0 1
 if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt[4] > 150)
 {
@@ -315,7 +353,7 @@ Serial.print("\n");
 Serial.print("I: ");
 Serial.print(I);
 Serial.print("\n");
-/*
+
 Serial.print("Capt1: ");
 Serial.print(capt[0]);
 Serial.print("\n");
@@ -342,12 +380,13 @@ Serial.print("\n");
 Serial.print("PID: ");
 Serial.print(PID);
 Serial.print("\n");*/
+/*
 if(on != 0){
   servo_pos += PID;
   CAR_move(1, 190, 190, servo_pos);
 }else
   CAR_move(1, 0, 0, 90);
-
+*/
 /*  Serial.flush();
    if(Serial.available())      // Send data only when you receive data:
    {
@@ -396,4 +435,3 @@ if(on != 0){
       }
    }
    */
-}
