@@ -35,8 +35,8 @@ Servo myservo;//create a object of servo,named as myservo
 #define repPlaceManoeuvre 90
 
 #define kp 8
-#define ki 0
-#define kd 16
+#define ki 0.4
+#define kd 0
 
 
 CRGB leds[4];
@@ -259,17 +259,17 @@ capt[1] = analogRead(LIGHT_RIGHT_1_PIN);
 //0 0 0 0 1
 if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt[4] > 150)
 {
-  trajectoire = -4;
+  trajectoire = -2.5;
 }
 //0 0 0 1 1 
 else if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] > 150 && capt[4] > 150)
 {
-  trajectoire = -3;
+  trajectoire = -2;
 }
 //0 0 0 1 0
 else if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] > 150 && capt[4] < 150)
 {
-  trajectoire = -2;
+  trajectoire = -1.5;
 }
 //0 0 1 1 0
 else if(capt[0] < 150 && capt[1] < 980 && capt[2] > 150 && capt[3] > 150 && capt[4] < 150)
@@ -289,17 +289,17 @@ else if(capt[0] < 150 && capt[1] > 980 && capt[2] > 150 && capt[3] < 150 && capt
 //0 1 0 0 0
 else if(capt[0] < 150 && capt[1] > 980 && capt[2] < 150 && capt[3] < 150 && capt[4] < 150)
 {
-  trajectoire = 2;
+  trajectoire = 1.5;
 }
 //1 1 0 0 0
 else if(capt[0] > 150 && capt[1] > 980 && capt[2] < 150 && capt[3] < 150 && capt[4] < 150)
 {
-  trajectoire = 3;
+  trajectoire = 2;
 }
 //1 0 0 0 0
 else if(capt[0] > 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt[4] < 150)
 {
-  trajectoire = 4;
+  trajectoire = 2.5;
 }
 else{
   trajectoire = 15;
