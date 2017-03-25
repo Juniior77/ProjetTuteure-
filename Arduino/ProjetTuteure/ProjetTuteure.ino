@@ -52,7 +52,7 @@ int dataServoDir;
 int dstAV;
 int dstAVD;
 int trajectoire;
-int oldTrajectoire;
+int oldTrajectoire = 0;
 int P;
 int I;
 int D;
@@ -238,15 +238,15 @@ void manoeuvre(){
 }
 void calculPID(){
   P = trajectoire;
-  I = I + trajectoire;
+  I += trajectoire;
   D = trajectoire - oldTrajectoire;
   PID = (kp * P)+(ki * I) + (kd * D);
+  oldTrajectoire = trajectoire;
 }
+
 void loop()
 {
-
-oldTrajectoire = trajectoire;
-
+  
 capt[4] = analogRead(LIGHT_LEFT_1_PIN);
 capt[3] = analogRead(LIGHT_LEFT_2_PIN);
 capt[2] = analogRead(LIGHT_MIDDLE_PIN); 
