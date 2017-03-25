@@ -34,8 +34,8 @@ Servo myservo;//create a object of servo,named as myservo
 #define repPlaceIdeal 450
 #define repPlaceManoeuvre 90
 
-#define kp 0.08
-#define ki 0
+#define kp 1
+#define ki 0.3
 #define kd 0
 
 
@@ -305,6 +305,14 @@ else{
   trajectoire = 0;
 }
 calculPID();
+
+Serial.print("P: ");
+Serial.print(P);
+Serial.print("\n");
+
+Serial.print("I: ");
+Serial.print(I);
+Serial.print("\n");
 /*
 Serial.print("Capt1: ");
 Serial.print(capt[0]);
@@ -332,10 +340,10 @@ Serial.print("\n");
 Serial.print("PID: ");
 Serial.print(PID);
 Serial.print("\n");*/
-if(trajectoire != 0)
+if(trajectoire != 0){
   servo_pos += PID;
   CAR_move(1, 190, 190, servo_pos);
-else
+}else
   CAR_move(1, 0, 0, 90);
 
 /*  Serial.flush();
