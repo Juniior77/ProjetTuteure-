@@ -35,6 +35,8 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
     private Bitmap mFeuVert;
     private Bitmap FeuDetresse;
     private Bitmap mFeuDetresse;
+    private Bitmap Parking;
+    private Bitmap mParking;
 
     public Thread cv_thread;
     public int posY;
@@ -50,6 +52,7 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
     public boolean FeuStop = true;
     public boolean ActionTourner1 = false;
     public boolean ActionTourner2 = false;
+    public boolean ActionParking = false;
 
     public VehiculeControlView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -85,6 +88,8 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
         mFeuVert = Bitmap.createScaledBitmap(FeuVert, 100, 100, true);
         FeuDetresse = BitmapFactory.decodeResource(mRes, R.drawable.danger);
         mFeuDetresse = Bitmap.createScaledBitmap(FeuDetresse, 100, 100, true);
+        Parking = BitmapFactory.decodeResource(mRes, R.drawable.parking);
+        mParking = Bitmap.createScaledBitmap(Parking, 100, 100, true);
     }
 
     @Override
@@ -193,6 +198,9 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
                     Warning = false;
                 Log.i("REPERE_BOUTON_WARNING", "HELLO TU EST SUR LE BOUTON CLIGNOTANT WARNING :)");
             }
+            else if(posX > (getWidth()/2) && posY > (getHeight() - 150) && posX < (getWidth()/2)+100 && posY < (getHeight() - 150)+100){
+                ActionParking = true;
+            }
         }
         Log.i("ACC", "Acceleration: " + repereAcceleration);
         return true;
@@ -206,6 +214,7 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
         drawFeuVert(canvas);
         drawFeuBleu(canvas);
         drawWarning(canvas);
+        drawParking(canvas);
         if(onMove) {
             drawJoyAccMove(canvas);
             FeuStop = false;
@@ -248,5 +257,7 @@ public class VehiculeControlView extends SurfaceView implements SurfaceHolder.Ca
     public void drawWarning(Canvas canvas){
         canvas.drawBitmap(mFeuDetresse, (getWidth()/2), 100, null);
     }
-
+    public void drawParking(Canvas canvas){
+        canvas.drawBitmap(mParking, (getWidth()/2), (getHeight() - 150), null);
+    }
 }

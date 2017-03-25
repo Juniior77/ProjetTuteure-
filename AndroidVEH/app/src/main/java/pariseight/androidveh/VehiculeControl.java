@@ -28,7 +28,7 @@ public class VehiculeControl extends Activity {
     BluetoothAdapter myBluetooth = null;
     BluetoothSocket btSocket = null;
     private boolean isBtConnected = false;
-    byte [] buffer = new byte[16];
+    byte [] buffer = new byte[17];
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private SensorManager mSensorManager;
     //private VehicleControlView mControlVehiculeView;
@@ -62,6 +62,8 @@ public class VehiculeControl extends Activity {
         {
             buffer[i] = 0 - 128;
         }
+        buffer[16] = 0 - 128;
+
 
         mControlView = (VehiculeControlView)findViewById(R.id.VehiculeContView);
         mControlView.setVisibility(View.VISIBLE);
@@ -685,9 +687,16 @@ public class VehiculeControl extends Activity {
             float y = sensorEvent.values[1];
             Direction(y);
             Acceleration();
+
+
+
             if (isBtConnected) {
                 try {
                     btSocket.getOutputStream().write(buffer);
+                    if(mControlView.ActionParking == true){
+                        mControlView.ActionParking = false;
+                        buffer[16] = 0 - 128;
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -723,6 +732,10 @@ public class VehiculeControl extends Activity {
         }
 
         buffer[3] = (byte) (direction - 128);
+
+        if(mControlView.ActionParking == true){
+            buffer[16] = 1 - 128;
+        }
         if (BuildConfig.DEBUG) {
             //Log.i("FCT->Direction", "Direction: " + direction + " Buffer: " + buffer[2]);
         }
