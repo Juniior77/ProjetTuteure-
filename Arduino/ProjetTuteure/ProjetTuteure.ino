@@ -34,18 +34,29 @@ Servo myservo;//create a object of servo,named as myservo
 #define repPlaceIdeal 450
 #define repPlaceManoeuvre 90
 
+#define kp 8
+#define ki 0
+#define kd 0
+
+
 CRGB leds[4];
 Ultrasonic ultraAV(7, 12);    //Capteur AV
 Ultrasonic ultraAVD(4, 3);
 
 byte dataIn[17];            //Variable for storing received data
-
+int capt[5];
 int dataAvAr;
 int dataMotor1;
 int dataMotor2;
 int dataServoDir;
 int dstAV;
 int dstAVD;
+int trajectoire;
+int oldTrajectoire;
+int P;
+int I;
+int D;
+int PID;
 
 int PlaceManoeuvre = repPlaceManoeuvre;
 int PlaceIdeal = repPlaceIdeal; //Pour une vitesse de 150 sur chaque moteur
@@ -54,8 +65,8 @@ void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
   
-    Serial.begin(115200);   //Sets the baud for serial data transmission    
-//      Serial.begin(9600);
+//    Serial.begin(115200);   //Sets the baud for serial data transmission    
+      Serial.begin(9600);
 
     pinMode(ENA_PIN, OUTPUT);
     pinMode(ENB_PIN, OUTPUT);
@@ -78,6 +89,12 @@ void setup()
 }
 void CAR_move(int direction, int speed_left, int speed_right, int direct)
 {
+  if(direct < 60){
+    direct = 60;
+  }
+  if(direct > 120){
+    direct = 120;
+  }
     switch(direction)
     {
         //car move forward with speed 180
@@ -181,6 +198,7 @@ void startParking(){
 }
 
 void manoeuvre(){
+  
   int marcheAR1 = 95;
   int marcheAR2 = 0;
   int marcheAR3 = 95;
@@ -216,12 +234,107 @@ void manoeuvre(){
     CAR_move(0,170,170,60);
   }
   CAR_move(0, 0, 0, 90);
+  return loop;
 }
-
+void calculPID(){
+  P = trajectoire;
+  I = I + trajectoire;
+  D = trajectoire - oldTrajectoire;
+  PID = (kp * P)+(ki * I) + (kd * D);
+}
 void loop()
 {
 
-  Serial.flush();
+oldTrajectoire = trajectoire;
+
+capt[4] = analogRead(LIGHT_LEFT_1_PIN);
+capt[3] = analogRead(LIGHT_LEFT_2_PIN);
+capt[2] = analogRead(LIGHT_MIDDLE_PIN); 
+capt[0] = analogRead(LIGHT_RIGHT_2_PIN);
+capt[1] = analogRead(LIGHT_RIGHT_1_PIN);
+
+//0 0 0 0 1
+if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt[4] > 150)
+{
+  trajectoire = -4;
+}
+//0 0 0 1 1 
+else if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] > 150 && capt[4] > 150)
+{
+  trajectoire = -3;
+}
+//0 0 0 1 0
+else if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] > 150 && capt[4] < 150)
+{
+  trajectoire = -2;
+}
+//0 0 1 1 0
+else if(capt[0] < 150 && capt[1] < 980 && capt[2] > 150 && capt[3] > 150 && capt[4] < 150)
+{
+  trajectoire = -1;
+}
+//0 0 1 0 0
+else if(capt[0] < 150 && capt[1] < 980 && capt[2] > 150 && capt[3] < 150 && capt[4] < 150)
+{
+  trajectoire = 0;
+}
+//0 1 1 0 0
+else if(capt[0] < 150 && capt[1] > 980 && capt[2] > 150 && capt[3] < 150 && capt[4] < 150)
+{
+  trajectoire = 1;
+}
+//0 1 0 0 0
+else if(capt[0] < 150 && capt[1] > 980 && capt[2] < 150 && capt[3] < 150 && capt[4] < 150)
+{
+  trajectoire = 2;
+}
+//1 1 0 0 0
+else if(capt[0] > 150 && capt[1] > 980 && capt[2] < 150 && capt[3] < 150 && capt[4] < 150)
+{
+  trajectoire = 3;
+}
+//1 0 0 0 0
+else if(capt[0] > 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt[4] < 150)
+{
+  trajectoire = 4;
+}
+else{
+  trajectoire = 15;
+}
+calculPID();
+/*
+Serial.print("Capt1: ");
+Serial.print(capt[0]);
+Serial.print("\n");
+
+Serial.print("Capt2: ");
+Serial.print(capt[1]);
+Serial.print("\n");
+
+Serial.print("Capt3: ");
+Serial.print(capt[2]);
+Serial.print("\n");
+
+Serial.print("Capt4: ");
+Serial.print(capt[3]);
+Serial.print("\n");
+
+Serial.print("Capt5: ");
+Serial.print(capt[4]);
+Serial.print("\n");
+Serial.print("\n");
+Serial.print("Trajectoire: ");
+Serial.print(trajectoire);
+Serial.print("\n");
+Serial.print("PID: ");
+Serial.print(PID);
+Serial.print("\n");*/
+if(trajectoire != 15)
+  CAR_move(1, 190, 190, 90 + PID);
+else
+  CAR_move(1, 0, 0, 90);
+
+/*  Serial.flush();
    if(Serial.available())      // Send data only when you receive data:
    {
       Serial.readBytes(dataIn, 17);        //Read the incoming data & store into data
@@ -268,4 +381,5 @@ void loop()
         startParking();
       }
    }
+   */
 }
