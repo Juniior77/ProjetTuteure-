@@ -34,8 +34,8 @@ Servo myservo;//create a object of servo,named as myservo
 #define repPlaceIdeal 450
 #define repPlaceManoeuvre 90
 
-#define kp 8
-#define ki 0
+#define kp 4
+#define ki 0.4
 #define kd 0
 
 
@@ -56,6 +56,9 @@ int oldTrajectoire;
 int P;
 int I;
 int D;
+  int Pold;
+  int Iold;
+  int Dold;
 int PID;
 
 int PlaceManoeuvre = repPlaceManoeuvre;
@@ -237,15 +240,28 @@ void manoeuvre(){
   return loop;
 }
 void calculPID(){
+if(PID < -30){
+  P = Pold;
+  I = Iold;
+  D = Dold;
+}
+else if(PID > 30){
+  P = Pold;
+  I = Iold;
+  D = Dold;
+}
+else{
   P = trajectoire;
   I = I + trajectoire;
   D = trajectoire - oldTrajectoire;
-  PID = (kp * P)+(ki * I) + (kd * D);
+}
+  PID = (kp * P) + (ki * I) + (kd * D);
+  Pold = P;
+  Iold = I;
+  Dold = D;
 }
 void loop()
 {
-
-oldTrajectoire = trajectoire;
 
 capt[4] = analogRead(LIGHT_LEFT_1_PIN);
 capt[3] = analogRead(LIGHT_LEFT_2_PIN);
@@ -301,7 +317,7 @@ else if(capt[0] > 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt
 else{
   trajectoire = 15;
 }
-calculPID();
+oldTrajectoire = trajectoire;
 /*
 Serial.print("Capt1: ");
 Serial.print(capt[0]);
@@ -325,12 +341,15 @@ Serial.print("\n");
 Serial.print("\n");
 Serial.print("Trajectoire: ");
 Serial.print(trajectoire);
-Serial.print("\n");
+Serial.print("\n");*/
 Serial.print("PID: ");
 Serial.print(PID);
-Serial.print("\n");*/
-if(trajectoire != 15)
-  CAR_move(1, 190, 190, 90 + PID);
+Serial.print("\n");
+
+if(trajectoire != 15){
+    calculPID();
+  CAR_move(1, 170, 170, 90 + PID);
+}
 else
   CAR_move(1, 0, 0, 90);
 
