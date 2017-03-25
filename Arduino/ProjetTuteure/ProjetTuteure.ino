@@ -52,11 +52,13 @@ int dataServoDir;
 int dstAV;
 int dstAVD;
 int trajectoire;
-int oldTrajectoire = 0;
+int Pold = 0;
 int P;
 int I;
 int D;
 int PID;
+int servo_init = 90;
+int servo_pos = servo_init;
 
 int PlaceManoeuvre = repPlaceManoeuvre;
 int PlaceIdeal = repPlaceIdeal; //Pour une vitesse de 150 sur chaque moteur
@@ -236,12 +238,13 @@ void manoeuvre(){
   CAR_move(0, 0, 0, 90);
   return loop;
 }
+
 void calculPID(){
-  P = trajectoire;
-  I += trajectoire;
-  D = trajectoire - oldTrajectoire;
+  P = trajectoire - servo_pos;
+  I += P;
+  D = P - Pold;
   PID = (kp * P)+(ki * I) + (kd * D);
-  oldTrajectoire = trajectoire;
+  Pold = P;
 }
 
 void loop()
@@ -256,50 +259,50 @@ capt[1] = analogRead(LIGHT_RIGHT_1_PIN);
 //0 0 0 0 1
 if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt[4] > 150)
 {
-  trajectoire = -4;
+  trajectoire = 62;
 }
 //0 0 0 1 1 
 else if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] > 150 && capt[4] > 150)
 {
-  trajectoire = -3;
+  trajectoire = 69;
 }
 //0 0 0 1 0
 else if(capt[0] < 150 && capt[1] < 980 && capt[2] < 150 && capt[3] > 150 && capt[4] < 150)
 {
-  trajectoire = -2;
+  trajectoire = 76;
 }
 //0 0 1 1 0
 else if(capt[0] < 150 && capt[1] < 980 && capt[2] > 150 && capt[3] > 150 && capt[4] < 150)
 {
-  trajectoire = -1;
+  trajectoire = 83;
 }
 //0 0 1 0 0
 else if(capt[0] < 150 && capt[1] < 980 && capt[2] > 150 && capt[3] < 150 && capt[4] < 150)
 {
-  trajectoire = 0;
+  trajectoire = 90;
 }
 //0 1 1 0 0
 else if(capt[0] < 150 && capt[1] > 980 && capt[2] > 150 && capt[3] < 150 && capt[4] < 150)
 {
-  trajectoire = 1;
+  trajectoire = 97;
 }
 //0 1 0 0 0
 else if(capt[0] < 150 && capt[1] > 980 && capt[2] < 150 && capt[3] < 150 && capt[4] < 150)
 {
-  trajectoire = 2;
+  trajectoire = 104;
 }
 //1 1 0 0 0
 else if(capt[0] > 150 && capt[1] > 980 && capt[2] < 150 && capt[3] < 150 && capt[4] < 150)
 {
-  trajectoire = 3;
+  trajectoire = 111;
 }
 //1 0 0 0 0
 else if(capt[0] > 150 && capt[1] < 980 && capt[2] < 150 && capt[3] < 150 && capt[4] < 150)
 {
-  trajectoire = 4;
+  trajectoire = 118;
 }
 else{
-  trajectoire = 15;
+  trajectoire = 0;
 }
 calculPID();
 /*
@@ -329,8 +332,10 @@ Serial.print("\n");
 Serial.print("PID: ");
 Serial.print(PID);
 Serial.print("\n");*/
-if(trajectoire != 15)
-  CAR_move(1, 190, 190, 90 + PID);
+if(trajectoire != 0)
+  PID /= 28;
+  servo_pos += PID;
+  CAR_move(1, 190, 190, servo_pos);
 else
   CAR_move(1, 0, 0, 90);
 
