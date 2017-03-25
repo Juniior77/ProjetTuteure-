@@ -38,33 +38,17 @@ Servo myservo;//create a object of servo,named as myservo
 #define ki 0
 #define kd 0
 
-#define LIGHT_LEFT_1_PIN  A0 //attach the left first Tracking module pinA0 to A0
-#define LIGHT_LEFT_2_PIN  A1 //attach the left second Tracking module pinA0 to A1
-#define LIGHT_MIDDLE_PIN  A2 //attach the module Tracking module pinA0 to A2
-#define LIGHT_RIGHT_1_PIN A3 //attach the right  second Tracking module pinA0 to A3
-#define LIGHT_RIGHT_2_PIN A4 //attach the right first Tracking module pinA0 to A4
 
-
-<<<<<<< HEAD
-byte dataIn[16];            //Variable for storing received data
-
-=======
 CRGB leds[4];
 Ultrasonic ultraAV(7, 12);    //Capteur AV
 Ultrasonic ultraAVD(4, 3);
 
 byte dataIn[17];            //Variable for storing received data
 int capt[5];
->>>>>>> master
 int dataAvAr;
 int dataMotor1;
 int dataMotor2;
 int dataServoDir;
-<<<<<<< HEAD
-
-int BLACK = 758;
-
-=======
 int dstAV;
 int dstAVD;
 int trajectoire;
@@ -76,7 +60,6 @@ int PID;
 
 int PlaceManoeuvre = repPlaceManoeuvre;
 int PlaceIdeal = repPlaceIdeal; //Pour une vitesse de 150 sur chaque moteur
->>>>>>> master
 
 void setup()
 {
@@ -259,47 +242,6 @@ void calculPID(){
   D = trajectoire - oldTrajectoire;
   PID = (kp * P)+(ki * I) + (kd * D);
 }
-
-void followline(){
-  int sensor;
-  
-  if (analogRead(LIGHT_LEFT_1_PIN) > BLACK)
-    sensor = 1;
-  else if (analogRead(LIGHT_LEFT_2_PIN) > BLACK)
-    sensor = 2;
-  else if (analogRead(LIGHT_MIDDLE_PIN) > BLACK)
-    sensor = 3;
-  else if (analogRead(LIGHT_RIGHT_2_PIN) > BLACK)
-    sensor = 4;
-  else if (analogRead(LIGHT_RIGHT_1_PIN) > BLACK)
-    sensor = 5;
-  switch (sensor)
-  {
-    case 1: 
-    dataServoDir = 60;
-    break;
-    
-    case 2:  
-    dataServoDir = 75;  
-    break;
-  
-    case 3: 
-    dataServoDir = 90;     
-    break;
-   
-    case 4:
-    dataServoDir = 105; 
-    break;
-    
-    case 5: 
-    dataServoDir = 120;
-    break;
-    
-    default: 
-    break;
-  }
-}
-
 void loop()
 {
 
@@ -409,12 +351,7 @@ else
           }
       }
 
-<<<<<<< HEAD
-      //followline();
-
-=======
       if(dataIn[16] == 0){
->>>>>>> master
       
       dataAvAr = dataIn[0];
       dataMotor1 = dataIn[1];
